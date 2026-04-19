@@ -1,8 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="CadastroCoordenador.aspx.cs" Inherits="WebApplication1.CadastroCoordenador" %>
-
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container mt-5">
-        <div class="card shadow-sm mx-auto" style="max-width: 600px;">
+        <div class="card shadow-sm mx-auto w-100">
             <div class="card-header bg-dark text-white text-center">
                 <h2 class="mb-0">👨‍🏫 Cadastro de Coordenador</h2>
             </div>
@@ -48,7 +47,11 @@
                 <hr />
 
                 <div class="mt-4">
-                    <h4 class="text-secondary">Lista de Coordenadores</h4>                    
+                    <h4 class="text-secondary">Lista de Coordenadores</h4>
+                    <asp:Panel ID="pnlBusca" runat="server">
+                        <asp:TextBox ID="txtFiltro" runat="server" placeholder="Digite nome ou titulação..."></asp:TextBox>
+                        <asp:Button ID="btnFiltrarNomeTitulacao" runat="server" Text="Filtrar" OnClick="btnFiltrarNomeTitulacao_Click" />
+                    </asp:Panel>
                     <asp:GridView ID="gridCoordenadores" runat="server" 
                         CssClass="table table-hover table-bordered mt-2" 
                         AutoGenerateColumns="true">

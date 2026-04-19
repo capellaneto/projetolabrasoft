@@ -18,6 +18,26 @@ namespace WebApplication1
 
         protected void btnSalvar_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txtNome.Text) ||
+            string.IsNullOrWhiteSpace(txtCPF.Text) ||
+            string.IsNullOrWhiteSpace(txtArea.Text) ||
+            string.IsNullOrWhiteSpace(txtEmail.Text) ||
+            ddlTitulacao.SelectedIndex <= 0)
+            {
+                lblMensagem.Text = "⚠️ Por favor, preencha todos os campos corretamente antes de salvar.";
+                lblMensagem.CssClass = "alert alert-warning d-block";
+                return;
+            }
+
+            if (Repositorio.ListaCoordenadores.Any(b => b.CPF == txtCPF.Text))
+            {
+                lblMensagem.Text = "⚠️ Este Coordenador já foi cadastrado!";
+                lblMensagem.CssClass = "alert alert-warning d-block";
+                LimparCampos();
+                AtualizarGrid();
+                return; // Para a execução aqui
+            }
+
             try
             {
                 // Criando o objeto usando o novo Model
@@ -41,6 +61,32 @@ namespace WebApplication1
             {
                 lblMensagem.Text = "Erro ao salvar coordenador.";
                 lblMensagem.CssClass = "text-danger";
+            }
+        }
+
+        protected void btnFiltrarNomeTitulacao_Click(object sender, EventArgs e)
+        {
+            var busca = txtFiltro.Text.ToLower();
+            var coordenadores = Repositorio.ListaCoordenadores.Where(c => c.Nome.ToLower().Contains(busca) || c.Titulacao.ToLower().Contains(busca)).ToList();
+
+            if (coordenadores.Count > 0)
+            {
+                // Tem resultado: mostra o grid e esconde o aviso
+                gridCoordenadores.DataSource = coordenadores;
+                gridCoordenadores.DataBind();
+
+                gridCoordenadores.Visible = true;
+                lblAviso.Visible = false;
+            }
+            else
+            {
+                // Não encontrou nada: limpa o grid e mostra o aviso
+                gridCoordenadores.DataSource = null;
+                gridCoordenadores.DataBind();
+
+                gridCoordenadores.Visible = false; // Opcional: esconde o cabeçalho do grid
+                lblAviso.Text = $"Nenhum coordenador encontrado para: '{txtFiltro.Text}'";
+                lblAviso.Visible = true;
             }
         }
 

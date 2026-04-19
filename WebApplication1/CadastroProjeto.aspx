@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="CadastroProjeto.aspx.cs" Inherits="WebApplication1.CadastroProjeto" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container mt-5">
-        <div class="card shadow">
+        <div class="card shadow w-100">
             <div class="card-header bg-primary text-white">
                 <h3>🚀 Novo Projeto de Extensão</h3>
             </div>
@@ -53,8 +53,8 @@
                     <asp:BoundField DataField="Titulo" HeaderText="Projeto" />
                     <asp:BoundField DataField="AreaConhecimento" HeaderText="Área" />
         
-                    <asp:TemplateField HeaderText="Responsável">
-                        <ItemTemplate><%# Eval("Responsavel.Nome") %></ItemTemplate>
+                    <asp:TemplateField HeaderText="Coordenador">
+                        <ItemTemplate><%# Eval("Coordenador.Nome") %></ItemTemplate>
                     </asp:TemplateField>
         
                     <asp:BoundField DataField="VerbaAprovada" HeaderText="Verba Total" DataFormatString="{0:C}" />

@@ -37,6 +37,34 @@ namespace WebApplication1
 
         protected void btnSalvarProjeto_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txtTitulo.Text) ||
+            string.IsNullOrWhiteSpace(txtAreaConhecimento.Text) ||
+            string.IsNullOrWhiteSpace(txtVerba.Text) ||
+            string.IsNullOrWhiteSpace(txtValorBolsa.Text) ||
+            ddlCoordenador.SelectedIndex <= 0)
+            {
+                lblMensagem.Text = "⚠️ Preencha os campos obrigatórios (Título, Área, Valores e Coordenador).";
+                lblMensagem.CssClass = "alert alert-warning d-block";
+                return;
+            }
+
+            // --- 2. VALIDAÇÃO DE VALORES NUMÉRICOS ---
+            if (!decimal.TryParse(txtVerba.Text, out decimal verbaTotal) ||
+                !decimal.TryParse(txtValorBolsa.Text, out decimal valorMensal))
+            {
+                lblMensagem.Text = "⚠️ Os campos de Verba e Valor devem ser numéricos.";
+                lblMensagem.CssClass = "alert alert-danger d-block";
+                return;
+            }
+
+            // --- 3. VERIFICAÇÃO DE DUPLICIDADE (Título do Projeto) ---
+            if (Repositorio.ListaProjetos.Any(p => p.Titulo.ToLower() == txtTitulo.Text.Trim().ToLower()))
+            {
+                lblMensagem.Text = "⚠️ Já existe um projeto cadastrado com este título!";
+                lblMensagem.CssClass = "alert alert-danger d-block";
+                return;
+            }
+
             try
             {
                 Projeto p = new Projeto();
@@ -55,7 +83,7 @@ namespace WebApplication1
 
                 // Relacionamento com Coordenador
                 string cpfCoord = ddlCoordenador.SelectedValue;
-                p.Responsavel = Repositorio.ListaCoordenadores.FirstOrDefault(c => c.CPF == cpfCoord);
+                p.Coordenador = Repositorio.ListaCoordenadores.FirstOrDefault(c => c.CPF == cpfCoord);
 
                 // Relacionamento com Bolsistas (Lista)
                 foreach (ListItem item in lstAlunos.Items)
@@ -63,7 +91,7 @@ namespace WebApplication1
                     if (item.Selected)
                     {
                         var aluno = Repositorio.ListaBolsistas.FirstOrDefault(b => b.CPF == item.Value);
-                        if (aluno != null) p.AlunosVinculados.Add(aluno);
+                        if (aluno != null) p.Bolsistas.Add(aluno);
                     }
                 }
 
@@ -104,16 +132,16 @@ namespace WebApplication1
 
                 // Preenche campos básicos
                 litTituloDet.Text = projeto.Titulo;
-                lblCoordDet.Text = projeto.Responsavel?.Nome ?? "Não definido";
-                lblTitDet.Text = projeto.Responsavel?.Titulacao;
+                lblCoordDet.Text = projeto.Coordenador?.Nome ?? "Não definido";
+                lblTitDet.Text = projeto.Coordenador?.Titulacao;
                 lblVerbaDet.Text = projeto.VerbaAprovada.ToString("C");
                 lblBolsaDet.Text = projeto.ValorBolsaIndividual.ToString("C"); // Novo campo
                 lblAreaDet.Text = projeto.AreaConhecimento;
 
                 // Preenche o Repeater com a lista de bolsistas
-                if (projeto.AlunosVinculados != null && projeto.AlunosVinculados.Count > 0)
+                if (projeto.Bolsistas != null && projeto.Bolsistas.Count > 0)
                 {
-                    rptBolsistasDet.DataSource = projeto.AlunosVinculados;
+                    rptBolsistasDet.DataSource = projeto.Bolsistas;
                     rptBolsistasDet.DataBind();
                     rptBolsistasDet.Visible = true;
                     lblSemBolsistas.Visible = false;

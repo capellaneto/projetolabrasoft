@@ -18,6 +18,26 @@ namespace WebApplication1
 
         protected void btnSalvar_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txtNome.Text) ||
+            string.IsNullOrWhiteSpace(txtMatricula.Text) ||
+            string.IsNullOrWhiteSpace(txtCPF.Text) ||
+            string.IsNullOrWhiteSpace(txtDataNasc.Text) ||
+            ddlSexo.SelectedIndex <= 0)
+            {
+                lblMensagem.Text = "⚠️ Por favor, preencha todos os campos corretamente antes de salvar.";
+                lblMensagem.CssClass = "alert alert-warning d-block";
+                return;
+            }
+
+            if (Repositorio.ListaBolsistas.Any(b => b.CPF == txtCPF.Text))
+            {
+                lblMensagem.Text = "⚠️ Este bolsista já foi cadastrado!";
+                lblMensagem.CssClass = "alert alert-warning d-block";
+                LimparCampos();
+                AtualizarGrid();
+                return; // Para a execução aqui
+            }
+
             try
             {
                 // 1. Instanciar e preencher o objeto (conforme você já fez)
