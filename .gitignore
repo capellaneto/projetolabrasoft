@@ -1,4 +1,39 @@
+# Visual Studio
 .vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build
 [Bb]in/
 [Oo]bj/
-*.user
+Debug/
+Release/
+
+# NuGet
+packages/
+*.nupkg
+
+# Logs
+*.log
+
+# IIS Express
+/.vs/
+/iisexpress/
+
+# Rider / VSCode
+.idea/
+.vscode/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Configs sens�veis
+appsettings.Development.json
+Web.config.user
+
+# Banco local
+*.mdf
+*.ldf
