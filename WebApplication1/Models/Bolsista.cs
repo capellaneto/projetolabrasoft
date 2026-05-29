@@ -10,7 +10,6 @@ namespace WebApplication1.Models
         public string Sexo { get; set; }
         public DateTime DataNascimento { get; set; }
 
-        // Construtor: Define valores iniciais ao dar 'new'
         public Bolsista()
         {
             this.DataNascimento = DateTime.Today; // Garante hora 00:00:00

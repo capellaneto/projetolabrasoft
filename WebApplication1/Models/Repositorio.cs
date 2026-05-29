@@ -14,10 +14,10 @@ namespace WebApplication1.Models
             new Bolsista { Nome = "Carla Dias", Matricula = "2024003", CPF = "333.444.555-03", Sexo = "F", DataNascimento = new DateTime(2004, 11, 30) },
             new Bolsista { Nome = "Daniel Augusto", Matricula = "2024004", CPF = "444.555.666-04", Sexo = "M", DataNascimento = new DateTime(2002, 1, 15) },
             new Bolsista { Nome = "Eduarda Lima", Matricula = "2024005", CPF = "555.666.777-05", Sexo = "F", DataNascimento = new DateTime(2006, 5, 20) },
-            new Bolsista { Nome = "Felipe Neto", Matricula = "2024006", CPF = "666.777.888-06", Sexo = "M", DataNascimento = new DateTime(2001, 9, 10) },
+            new Bolsista { Nome = "Felipe Neto", Matricula = "2024006", CPF = "666.777.888-06", Sexo = "O", DataNascimento = new DateTime(2001, 9, 10) },
             new Bolsista { Nome = "Gabriela Rocha", Matricula = "2024007", CPF = "777.888.999-07", Sexo = "F", DataNascimento = new DateTime(2005, 8, 05) },
             new Bolsista { Nome = "Hugo Souza", Matricula = "2024008", CPF = "888.999.000-08", Sexo = "M", DataNascimento = new DateTime(2003, 12, 12) },
-            new Bolsista { Nome = "Isabela Martins", Matricula = "2024009", CPF = "999.000.111-09", Sexo = "F", DataNascimento = new DateTime(2004, 4, 18) },
+            new Bolsista { Nome = "Isabela Martins", Matricula = "2024009", CPF = "999.000.111-09", Sexo = "O", DataNascimento = new DateTime(2004, 4, 18) },
             new Bolsista { Nome = "João Pedro", Matricula = "2024010", CPF = "000.111.222-10", Sexo = "M", DataNascimento = new DateTime(2002, 6, 22) }
         };
         public static List<Coordenador> ListaCoordenadores = new List<Coordenador>
