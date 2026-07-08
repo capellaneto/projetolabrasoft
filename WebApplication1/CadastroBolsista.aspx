@@ -43,11 +43,35 @@
                 </div>
 
 
-                <div class="d-grid gap-2">
+                <div class="d-flex gap-3 mt-4">
                     <asp:Button ID="btnSalvar" runat="server" Text="Salvar e Processar Cadastro" 
-                        CssClass="btn btn-success btn-lg w-100" OnClick="btnSalvar_Click" />
-                </div>
+                        CssClass="btn btn-success btn-lg flex-fill" OnClick="btnSalvar_Click" />
 
+                    <asp:Button ID="btnLimpar" runat="server" Text="Limpar"
+                          CssClass="btn btn-secondary flex-fill" OnClick="btnLimpar_Click" />
+                </div>
+              
+                 <h4 class="fw-semibold text-title mb-4 mt-5"> Lista de Bolsistas </h4> 
+
+                 <asp:Panel ID="pnlBolsistas"
+                     runat="server"> 
+                    <asp:Button ID="btnFiltroMasc" runat="server" Text="Filtro Masculino"
+                         CssClass="btn btn-warning flex-fill" OnClick="btnFiltroMasc_Click" />
+                     <asp:Button ID="btnFiltroFem" runat="server" Text="Filtro Feminino"
+                         CssClass="btn btn-warning flex-fill" OnClick="btnFiltroFem_Click" />
+                    <asp:Button ID="btnOrdemAlfabetica" runat="server" Text="Ordenar"
+                         CssClass="btn btn-secondary flex-fill" OnClick="btnOrdemAlfabetica_Click" />
+                     <asp:Button ID="btnOrigem" runat="server" Text="Lista Original"
+                         CssClass="btn btn-success flex-fill" OnClick="btnOrigem_Click" />
+
+                     
+                    
+                   <asp:GridView ID="gvBolsistas"
+                    runat="server"
+                    AutoGenerateColumns ="True"
+                    CssClass="table table-striped table-bordered mt-4"
+                   ></asp:GridView>
+                  </asp:Panel>
                 <div class="mt-4 text-center">
                     <asp:Label ID="lblMensagem" runat="server" CssClass="h6"></asp:Label>
                 </div>
