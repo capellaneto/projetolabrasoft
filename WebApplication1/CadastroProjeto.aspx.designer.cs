@@ -24,15 +24,6 @@ namespace WebApplication1
         protected global::System.Web.UI.WebControls.TextBox txtTitulo;
 
         /// <summary>
-        /// Controle txtAreaConhecimento.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtAreaConhecimento;
-
-        /// <summary>
         /// Controle txtVerba.
         /// </summary>
         /// <remarks>
@@ -51,40 +42,40 @@ namespace WebApplication1
         protected global::System.Web.UI.WebControls.TextBox txtValorBolsa;
 
         /// <summary>
-        /// Controle ddlCoordenador.
+        /// Controle Coordenadores.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCoordenador;
+        protected global::System.Web.UI.WebControls.DropDownList Coordenadores;
 
         /// <summary>
-        /// Controle lstAlunos.
+        /// Controle Bolsistas.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ListBox lstAlunos;
+        protected global::System.Web.UI.WebControls.DropDownList Bolsistas;
 
         /// <summary>
-        /// Controle btnSalvarProjeto.
+        /// Controle txtArea.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSalvarProjeto;
+        protected global::System.Web.UI.WebControls.TextBox txtArea;
 
         /// <summary>
-        /// Controle lblMensagem.
+        /// Controle btnSalvar.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMensagem;
+        protected global::System.Web.UI.WebControls.Button btnSalvar;
 
         /// <summary>
         /// Controle gridProjetos.
@@ -96,93 +87,21 @@ namespace WebApplication1
         protected global::System.Web.UI.WebControls.GridView gridProjetos;
 
         /// <summary>
-        /// Controle pnlDetalhes.
+        /// Controle lblAviso.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlDetalhes;
+        protected global::System.Web.UI.WebControls.Label lblAviso;
 
         /// <summary>
-        /// Controle litTituloDet.
+        /// Controle lblMensagem.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litTituloDet;
-
-        /// <summary>
-        /// Controle btnFechar.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnFechar;
-
-        /// <summary>
-        /// Controle lblCoordDet.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCoordDet;
-
-        /// <summary>
-        /// Controle lblTitDet.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTitDet;
-
-        /// <summary>
-        /// Controle lblVerbaDet.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblVerbaDet;
-
-        /// <summary>
-        /// Controle lblBolsaDet.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblBolsaDet;
-
-        /// <summary>
-        /// Controle lblAreaDet.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblAreaDet;
-
-        /// <summary>
-        /// Controle rptBolsistasDet.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptBolsistasDet;
-
-        /// <summary>
-        /// Controle lblSemBolsistas.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblSemBolsistas;
+        protected global::System.Web.UI.WebControls.Label lblMensagem;
     }
 }

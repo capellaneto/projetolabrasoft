@@ -34,57 +34,8 @@ namespace WebApplication1.Models
             new Coordenador { Nome = "Dr. Silvio Santos", CPF = "012.012.012-00", Titulacao = "Doutor", AreaAtuacao = "Comunicação", Email = "silvio.santos@ifba.edu.br" }
         };
         public static List<Projeto> ListaProjetos = new List<Projeto>
-        {    
-            new Projeto
-            {
-                Id = 1,
-                Titulo = "IA no Diagnóstico Precoce",
-                AreaConhecimento = "Tecnologia/Saúde",
-                VerbaAprovada = 50000.00m,
-                ValorBolsaIndividual = 700.00m,
-                Coordenador = Repositorio.ListaCoordenadores.FirstOrDefault(c => c.Nome.Contains("Marcos")),
-                Bolsistas = Repositorio.ListaBolsistas.Take(2).ToList()
-            },
-            new Projeto
-            {
-                Id = 2,
-                Titulo = "Alfabetização Digital na Terceira Idade",
-                AreaConhecimento = "Educação",
-                VerbaAprovada = 15000.00m,
-                ValorBolsaIndividual = 400.00m,
-                Coordenador = Repositorio.ListaCoordenadores.FirstOrDefault(c => c.Titulacao == "Mestre"),
-                Bolsistas = new List<Bolsista> { Repositorio.ListaBolsistas.ElementAt(2) }
-            },
-            new Projeto
-            {
-                Id = 3,
-                Titulo = "Hortas Comunitárias Inteligentes",
-                AreaConhecimento = "Meio Ambiente",
-                VerbaAprovada = 25000.00m,
-                ValorBolsaIndividual = 500.00m,
-                Coordenador = Repositorio.ListaCoordenadores.FirstOrDefault(c => c.AreaAtuacao == "Meio Ambiente"),
-                Bolsistas = Repositorio.ListaBolsistas.Skip(3).Take(3).ToList()
-            },
-            new Projeto
-            {
-                Id = 4,
-                Titulo = "Otimização de Fluxo em Cidades Inteligentes",
-                AreaConhecimento = "Engenharia",
-                VerbaAprovada = 80000.00m,
-                ValorBolsaIndividual = 1000.00m,
-                Coordenador = Repositorio.ListaCoordenadores.FirstOrDefault(c => c.Titulacao == "Pós-Doc"),
-                Bolsistas = Repositorio.ListaBolsistas.Skip(6).Take(2).ToList()
-            },
-            new Projeto
-            {
-                Id = 5,
-                Titulo = "Podcast Acadêmico: Ciência para Todos",
-                AreaConhecimento = "Comunicação",
-                VerbaAprovada = 5000.00m,
-                ValorBolsaIndividual = 400.00m,
-                Coordenador = Repositorio.ListaCoordenadores.LastOrDefault(),
-                Bolsistas = new List<Bolsista>() // Lista vazia
-            }
+        {
+
         };
     }
 }

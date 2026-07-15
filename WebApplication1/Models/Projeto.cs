@@ -2,28 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using WebApplication1.Models;
 
-namespace WebApplication1.Models
+namespace WebApplication1
 {
     public class Projeto
     {
-        public int Id { get; set; }
         public string Titulo { get; set; }
-        public string AreaConhecimento { get; set; }
 
-        // Atributos Financeiros
-        public decimal VerbaAprovada { get; set; }
-        public decimal ValorBolsaIndividual { get; set; }
+        public float Verba { get; set; }
 
-        // COMPOSIÇÃO (Relacionamentos)
-        public Coordenador Coordenador { get; set; } // 1 Coordenador
-        public List<Bolsista> Bolsistas { get; set; } // Vários Bolsistas
+        public Coordenador coordenador { get; set; }
 
-        public Projeto()
-        {
-            // OBRIGATÓRIO: Inicializa a lista para que possamos dar .Add() nela depois
-            this.Bolsistas = new List<Bolsista>();
-            this.VerbaAprovada = 0;
-        }
+        public static List<Bolsista> ListaBolsistas = new List<Bolsista>();
+
+        public float Valor_Bolsa {  get; set; }
+
+        public string Area {  get; set; }
     }
+
+
 }

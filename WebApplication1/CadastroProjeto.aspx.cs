@@ -10,156 +10,99 @@ namespace WebApplication1
 {
     public partial class CadastroProjeto : System.Web.UI.Page
     {
-        protected void Page_Load(object sender, EventArgs e)
+        private void AtualizarGrid()
         {
-            if (!IsPostBack)
+            var listaProjetos = Repositorio.ListaProjetos;
+            if (listaProjetos.Count > 0)
             {
-                CarregarDadosIniciais();
-                AtualizarGrid();
+                gridProjetos.DataSource = listaProjetos;
+                gridProjetos.DataBind();
+                lblAviso.Visible = false;
+            }
+            else
+            {
+                lblAviso.Visible = true;
             }
         }
 
-        private void CarregarDadosIniciais()
+        protected void Page_Load(object sender, EventArgs e)
         {
-            // Preenche Coordenadores
-            ddlCoordenador.DataSource = Repositorio.ListaCoordenadores;
-            ddlCoordenador.DataTextField = "Nome";
-            ddlCoordenador.DataValueField = "CPF";
-            ddlCoordenador.DataBind();
-            ddlCoordenador.Items.Insert(0, new ListItem("Selecione um Coordenador...", ""));
+            if(!IsPostBack)
+            {
+                AtualizarGrid();
+                var ListaCoordenadores = Repositorio.ListaCoordenadores;
+                    
+                Coordenadores.DataSource = ListaCoordenadores;
+                Coordenadores.DataTextField = "Nome";
+                Coordenadores.DataValueField = "CPF";
+                Coordenadores.DataBind();
 
-            // Preenche Alunos
-            lstAlunos.DataSource = Repositorio.ListaBolsistas;
-            lstAlunos.DataTextField = "Nome";
-            lstAlunos.DataValueField = "CPF";
-            lstAlunos.DataBind();
+                Coordenadores.Items.Insert(0, new ListItem("Selecione", ""));
+
+                var ListaBolsistas = Repositorio.ListaBolsistas;
+
+                Bolsistas.DataSource = ListaBolsistas;
+                Bolsistas.DataTextField = "Nome";
+                Bolsistas.DataValueField = "CPF";
+                Bolsistas.DataBind();
+
+                Bolsistas.Items.Insert(0, new ListItem("Selecione", ""));
+            }
         }
-
-        protected void btnSalvarProjeto_Click(object sender, EventArgs e)
+        protected void btnSalvar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtTitulo.Text) ||
-            string.IsNullOrWhiteSpace(txtAreaConhecimento.Text) ||
             string.IsNullOrWhiteSpace(txtVerba.Text) ||
-            string.IsNullOrWhiteSpace(txtValorBolsa.Text) ||
-            ddlCoordenador.SelectedIndex <= 0)
+            string.IsNullOrWhiteSpace(txtArea.Text) ||
+            Coordenadores.SelectedIndex <= 0)
             {
-                lblMensagem.Text = "⚠️ Preencha os campos obrigatórios (Título, Área, Valores e Coordenador).";
+                lblMensagem.Text = "⚠️ Por favor, preencha todos os campos corretamente antes de salvar.";
                 lblMensagem.CssClass = "alert alert-warning d-block";
                 return;
             }
 
-            // --- 2. VALIDAÇÃO DE VALORES NUMÉRICOS ---
-            if (!decimal.TryParse(txtVerba.Text, out decimal verbaTotal) ||
-                !decimal.TryParse(txtValorBolsa.Text, out decimal valorMensal))
+            if (Repositorio.ListaProjetos.Any(b => b.Titulo == txtTitulo.Text))
             {
-                lblMensagem.Text = "⚠️ Os campos de Verba e Valor devem ser numéricos.";
-                lblMensagem.CssClass = "alert alert-danger d-block";
-                return;
-            }
-
-            // --- 3. VERIFICAÇÃO DE DUPLICIDADE (Título do Projeto) ---
-            if (Repositorio.ListaProjetos.Any(p => p.Titulo.ToLower() == txtTitulo.Text.Trim().ToLower()))
-            {
-                lblMensagem.Text = "⚠️ Já existe um projeto cadastrado com este título!";
-                lblMensagem.CssClass = "alert alert-danger d-block";
-                return;
+                lblMensagem.Text = "⚠️ Este Projeto já foi cadastrado!";
+                lblMensagem.CssClass = "alert alert-warning d-block";
+                LimparCampos();
+                AtualizarGrid();
+                return; // Para a execução aqui
             }
 
             try
             {
-                Projeto p = new Projeto();
+                // Criando o objeto usando o novo Model
+                Projeto novo = new Projeto();
+                novo.Titulo = txtTitulo.Text;
+                novo.Verba = float.Parse(txtVerba.Text);
+                novo.Area = txtArea.Text;
+                novo.Valor_Bolsa = float.Parse(txtValorBolsa.Text);
 
-                // Atributos de Texto
-                p.Titulo = txtTitulo.Text;
-                p.AreaConhecimento = txtAreaConhecimento.Text;
+                // 2. ADICIONAR NA LISTA ESTÁTICA
+                Repositorio.ListaProjetos.Add(novo);
 
-                // Atributos Financeiros (usando TryParse para evitar erros de digitação)
-                decimal verba, valorBolsa;
-                decimal.TryParse(txtVerba.Text, out verba);
-                decimal.TryParse(txtValorBolsa.Text, out valorBolsa);
-
-                p.VerbaAprovada = verba;
-                p.ValorBolsaIndividual = valorBolsa;
-
-                // Relacionamento com Coordenador
-                string cpfCoord = ddlCoordenador.SelectedValue;
-                p.Coordenador = Repositorio.ListaCoordenadores.FirstOrDefault(c => c.CPF == cpfCoord);
-
-                // Relacionamento com Bolsistas (Lista)
-                foreach (ListItem item in lstAlunos.Items)
-                {
-                    if (item.Selected)
-                    {
-                        var aluno = Repositorio.ListaBolsistas.FirstOrDefault(b => b.CPF == item.Value);
-                        if (aluno != null) p.Bolsistas.Add(aluno);
-                    }
-                }
-
-                // Salvar e atualizar
-                Repositorio.ListaProjetos.Add(p);
                 LimparCampos();
+                lblMensagem.Text = "Coordenador salvo com sucesso!";
+                lblMensagem.CssClass = "text-success";
+
                 AtualizarGrid();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                lblMensagem.Text = "❌ Erro ao salvar projeto: " + ex.Message;
-                lblMensagem.CssClass = "text-danger d-block mt-2";
+                lblMensagem.Text = "Erro ao salvar coordenador.";
+                lblMensagem.CssClass = "text-danger";
             }
         }
 
-        private void LimparCampos()
+            private void LimparCampos()
         {
             txtTitulo.Text = "";
-            txtAreaConhecimento.Text = "";
             txtVerba.Text = "";
-            txtValorBolsa.Text = "";
-            ddlCoordenador.SelectedIndex = 0;
-            lstAlunos.ClearSelection();
-        }
-
-        private void AtualizarGrid()
-        {
-            gridProjetos.DataSource = Repositorio.ListaProjetos;
-            gridProjetos.DataBind();
-        }
-
-        protected void gridProjetos_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            if (e.CommandName == "VerDetalhes")
-            {
-                int index = Convert.ToInt32(e.CommandArgument);
-                var projeto = Repositorio.ListaProjetos[index];
-
-                // Preenche campos básicos
-                litTituloDet.Text = projeto.Titulo;
-                lblCoordDet.Text = projeto.Coordenador?.Nome ?? "Não definido";
-                lblTitDet.Text = projeto.Coordenador?.Titulacao;
-                lblVerbaDet.Text = projeto.VerbaAprovada.ToString("C");
-                lblBolsaDet.Text = projeto.ValorBolsaIndividual.ToString("C"); // Novo campo
-                lblAreaDet.Text = projeto.AreaConhecimento;
-
-                // Preenche o Repeater com a lista de bolsistas
-                if (projeto.Bolsistas != null && projeto.Bolsistas.Count > 0)
-                {
-                    rptBolsistasDet.DataSource = projeto.Bolsistas;
-                    rptBolsistasDet.DataBind();
-                    rptBolsistasDet.Visible = true;
-                    lblSemBolsistas.Visible = false;
-                }
-                else
-                {
-                    rptBolsistasDet.Visible = false;
-                    lblSemBolsistas.Visible = true;
-                }
-
-                pnlDetalhes.Visible = true;
-            }
-        }
-
-        // Botão para esconder o painel novamente
-        protected void btnFechar_Click(object sender, EventArgs e)
-        {
-            pnlDetalhes.Visible = false;
+            txtArea.Text = "";
+            Coordenadores.SelectedIndex = 0;
+            Bolsistas.SelectedIndex = 0;
+            txtTitulo.Focus();
         }
     }
 }
