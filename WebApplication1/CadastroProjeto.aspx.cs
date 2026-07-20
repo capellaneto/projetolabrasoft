@@ -29,7 +29,8 @@ namespace WebApplication1
         {
             if(!IsPostBack)
             {
-                AtualizarGrid();
+                AtualizarGrid(); 
+                //caso der erro passar codigo abaixo para atualizar grid
                 var ListaCoordenadores = Repositorio.ListaCoordenadores;
                     
                 Coordenadores.DataSource = ListaCoordenadores;
@@ -41,12 +42,12 @@ namespace WebApplication1
 
                 var ListaBolsistas = Repositorio.ListaBolsistas;
 
-                Bolsistas.DataSource = ListaBolsistas;
-                Bolsistas.DataTextField = "Nome";
-                Bolsistas.DataValueField = "CPF";
-                Bolsistas.DataBind();
+                ListaTodosBolsistas.DataSource = ListaBolsistas;
+                ListaTodosBolsistas.DataTextField = "Nome";
+                ListaTodosBolsistas.DataValueField = "CPF";
+                ListaTodosBolsistas.DataBind();
 
-                Bolsistas.Items.Insert(0, new ListItem("Selecione", ""));
+                ListaTodosBolsistas.Items.Insert(0, new ListItem("Selecione", ""));
             }
         }
         protected void btnSalvar_Click(object sender, EventArgs e)
@@ -61,6 +62,8 @@ namespace WebApplication1
                 return;
             }
 
+           //if(Repositorio) terminar if que bloqueia o cadastro de coordenadores e bolsistas ja cadastrados em outros projetos
+            
             if (Repositorio.ListaProjetos.Any(b => b.Titulo == txtTitulo.Text))
             {
                 lblMensagem.Text = "⚠️ Este Projeto já foi cadastrado!";
@@ -70,7 +73,7 @@ namespace WebApplication1
                 return; // Para a execução aqui
             }
 
-            try
+                try
             {
                 // Criando o objeto usando o novo Model
                 Projeto novo = new Projeto();
@@ -78,31 +81,72 @@ namespace WebApplication1
                 novo.Verba = float.Parse(txtVerba.Text);
                 novo.Area = txtArea.Text;
                 novo.Valor_Bolsa = float.Parse(txtValorBolsa.Text);
+                novo.coordenador = Repositorio.ListaCoordenadores.FirstOrDefault(c => c.CPF == Coordenadores.SelectedValue);
+
+                foreach(ListItem item in ListaTodosBolsistas.Items)
+                {
+                    if (item.Selected)
+                    {
+                        Bolsista bolsista = Repositorio.ListaBolsistas.FirstOrDefault(b => b.CPF == (item.Value));
+
+                       if (bolsista != null)
+                        {
+                            novo.ListaBolsistasProjeto.Add(bolsista); 
+                        }
+                    }
+                }
 
                 // 2. ADICIONAR NA LISTA ESTÁTICA
                 Repositorio.ListaProjetos.Add(novo);
 
                 LimparCampos();
-                lblMensagem.Text = "Coordenador salvo com sucesso!";
+                lblMensagem.Text = "Projeto salvo com sucesso!";
                 lblMensagem.CssClass = "text-success";
 
                 AtualizarGrid();
             }
             catch (Exception)
             {
-                lblMensagem.Text = "Erro ao salvar coordenador.";
+                lblMensagem.Text = "Erro ao salvar Projeto.";
                 lblMensagem.CssClass = "text-danger";
             }
         }
+        protected void gridProjetos_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if(e.CommandName == "MostrarDetalhes")
+            {
+                int indice = Convert.ToInt32(e.CommandArgument);
+
+                Projeto projeto = Repositorio.ListaProjetos[indice];
+                //relação de indice da tabela pode não convergir com a posição do objeto na lista
+
+                pnlDetalhes.Visible = true;
+
+                lblTitulo.Text ="Titulo: " + projeto.Titulo;
+                lblArea.Text = "Area: " + projeto.Area;
+                lblVerba.Text = "Verba: " + projeto.Verba;
+                lblValorBolsa.Text = "Valor da Bolsa: " + projeto.Valor_Bolsa;
+                lblCoordenador.Text = "Coordenador: " + projeto.coordenador.Nome;
+
+                
+
+                rptBolsistas.DataSource = projeto.ListaBolsistasProjeto;
+                rptBolsistas.DataBind();
+            }
+        }
+
 
             private void LimparCampos()
         {
             txtTitulo.Text = "";
             txtVerba.Text = "";
+            txtValorBolsa.Text = "";
             txtArea.Text = "";
             Coordenadores.SelectedIndex = 0;
-            Bolsistas.SelectedIndex = 0;
+            ListaTodosBolsistas.SelectedIndex = 0;
             txtTitulo.Focus();
         }
+
+
     }
 }

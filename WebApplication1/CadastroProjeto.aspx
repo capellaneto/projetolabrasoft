@@ -33,8 +33,8 @@
 
                     <div class="col-md-6 form-group mb-3">
                         <label class="form-label font-weight-bold">Bolsista:</label>
-                        <asp:DropDownList ID="Bolsistas" runat="server" CssClass="form-control">
-                        </asp:DropDownList>
+                                <asp:ListBox ID="ListaTodosBolsistas" runat="server"  CssClass="form-control" SelectionMode="Multiple" Rows="8">    
+                                </asp:ListBox>
                     </div>
             </div>
 
@@ -45,19 +45,75 @@
 
 
             <div class="d-grid gap-2">
-                <asp:Button ID="btnSalvar" runat="server" Text="Cadastrar Coordenador" 
+                <asp:Button ID="btnSalvar" runat="server" Text="Cadastrar Projeto" 
                     CssClass="btn btn-dark btn-lg w-100" OnClick="btnSalvar_Click"/>
             </div>
 
             <hr />
                 <div class="mt-4">
-                    <h4 class="text-secondary">Lista de Coordenadores</h4>
+                    <h4 class="text-secondary">Lista de Projetos</h4>
       
                     <asp:GridView ID="gridProjetos" runat="server" 
                         CssClass="table table-hover table-bordered mt-2" 
-                        AutoGenerateColumns="true">
-                        <HeaderStyle CssClass="table-dark" />
+                        AutoGenerateColumns="false"
+                        OnRowCommand="gridProjetos_RowCommand">
+
+                        <Columns>
+
+                            <asp:BoundField DataField="Titulo" HeaderText="´Titulo" />
+                            <asp:BoundField DataField="Area" HeaderText="Area" />
+                            <asp:BoundField DataField="Verba" HeaderText="´Verba" />
+
+                            <asp:TemplateField HeaderText="Ações">
+                                <ItemTemplate>
+                                    <asp:Button
+                                        ID= "btnDetalhes" runat="server" Text="Detalhes"
+                                        CommandName="MostrarDetalhes" CommandArgument='<%# Container.DataItemIndex %>' />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+
+                        </Columns>
                     </asp:GridView>
+
+                    <asp:Panel ID="pnlDetalhes" runat="server" Visible="false" CssClass="card mt-3">
+                        <div class="card-header bg-dark text-white">
+                            Detalhes do Projeto
+                        </div>
+
+                        <div class="card-body">
+
+                          <asp:Label ID="lblTitulo" runat="server"></asp:Label>
+                          <br />
+                          <asp:Label ID="lblArea" runat="server"></asp:Label>
+                          <br />
+                          <asp:Label ID="lblVerba" runat="server"></asp:Label>
+                          <br />
+                          <asp:Label ID="lblValorBolsa" runat="server"></asp:Label>
+                          <br />
+                          <asp:Label ID="lblCoordenador" runat="server"></asp:Label>
+                          <br />
+                          <asp:Label ID="lblBolsista" runat="server"></asp:Label>
+                          <br />
+
+                          <h5>Bolsistas:</h5>
+
+                            <asp:Repeater ID="rptBolsistas" runat="server">
+
+                                <ItemTemplate>
+
+                                    <div class="card mb-2">
+                                        Nome:
+                                        <%# Eval("Nome") %>
+                                    </div>
+
+                                </ItemTemplate>
+
+                            </asp:Repeater>
+
+                        </div>
+                        </asp:Panel>
+
+
                     <asp:Label ID="lblAviso" runat="server" Text="Nenhum coordenador cadastrado." CssClass="text-muted small italic"></asp:Label>
                 </div>
 
@@ -67,4 +123,5 @@
     </div>
     </div>
 </div>
+        </div>
 </asp:Content>
