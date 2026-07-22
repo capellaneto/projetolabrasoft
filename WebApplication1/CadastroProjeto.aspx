@@ -12,23 +12,35 @@
             <div class="form-group mb-3">
                 <label class="form-label font-weight-bold">Titulo:</label>
                 <asp:TextBox ID="txtTitulo" runat="server" CssClass="form-control"></asp:TextBox>
+                <small class="text-danger">
+                 campo obrigatório
+                </small>
             </div>
 
             <div class="row">
                 <div class="col-md-6 form-group mb-3">
                     <label class="form-label font-weight-bold">Verba:</label>
                     <asp:TextBox ID="txtVerba" runat="server" CssClass="form-control" placeholder="00"></asp:TextBox>
+                    <small class="text-danger">
+                     campo obrigatório
+                    </small>
                 </div>
 
                 <div class="row">
                 <div class="col-md-6 form-group mb-3">
                     <label class="form-label font-weight-bold">Valor da Bolsa:</label>
                     <asp:TextBox ID="txtValorBolsa" runat="server" CssClass="form-control" placeholder="00"></asp:TextBox>
+                    <small class="text-danger">
+                     campo obrigatório
+                    </small>
                 </div>
                     <div class="col-md-6 form-group mb-3">
                         <label class="form-label font-weight-bold">Coordenador:</label>
                         <asp:DropDownList ID="Coordenadores" runat="server" CssClass="form-control">
                         </asp:DropDownList>
+                        <small class="text-danger">
+                         campo obrigatório
+                        </small>
                     </div>
 
                     <div class="col-md-6 form-group mb-3">
@@ -41,6 +53,9 @@
             <div class="form-group mb-3">
                 <label class="form-label font-weight-bold">Área de Atuação:</label>
                 <asp:TextBox ID="txtArea" runat="server" CssClass="form-control" placeholder="Ex: Engenharia de Software"></asp:TextBox>
+                <small class="text-danger">
+                 campo obrigatório
+                </small>
             </div>
 
 
@@ -109,6 +124,11 @@
                                 </ItemTemplate>
 
                             </asp:Repeater>
+
+                            <asp:Label ID="lblSemBolsista" runat="server" Text="⚠️ Este projeto não possui bolsistas cadastrados"
+                                       CssClass="text-warning"
+                                       Visible="false">
+                            </asp:Label>
 
                         </div>
                         </asp:Panel>

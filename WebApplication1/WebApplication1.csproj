@@ -103,6 +103,8 @@
     <Compile Include="CadastroProjeto.aspx.designer.cs">
       <DependentUpon>CadastroProjeto.aspx</DependentUpon>
     </Compile>
+    <Compile Include="DAL\BolsistaDAO.cs" />
+    <Compile Include="DAL\Conexao.cs" />
     <Compile Include="Models\Bolsista.cs" />
     <Compile Include="Models\Coordenador.cs" />
     <Compile Include="Models\Repositorio.cs" />

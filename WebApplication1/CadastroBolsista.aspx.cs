@@ -49,7 +49,7 @@ namespace WebApplication1
                 novo.DataNascimento = DateTime.Parse(txtDataNasc.Text);
 
                 // 2. ADICIONAR NA LISTA ESTÁTICA
-                Repositorio.ListaBolsistas.Add(novo);
+                Repositorio.SalvarBolsista(novo);
 
                 // 3. Limpar os campos para o próximo cadastro
                 LimparCampos();

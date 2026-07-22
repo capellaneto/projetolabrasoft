@@ -73,6 +73,33 @@ namespace WebApplication1
                 return; // Para a execução aqui
             }
 
+            if (Repositorio.ListaProjetos.Any(p => p.coordenador.CPF == Coordenadores.SelectedValue))
+            {
+                lblMensagem.Text = "⚠️ Este Coordenador já está cadastrado em outro projeto!";
+                lblMensagem.CssClass = "alert alert-warning d-block";
+                LimparCampos();
+                AtualizarGrid();
+                return;
+            }
+
+            foreach (ListItem item in ListaTodosBolsistas.Items)
+            {
+                if (item.Selected)
+                {
+                    bool ListaBolsistas = Repositorio.ListaProjetos.Any(p =>
+                    p.ListaBolsistasProjeto.Any(b => b.CPF == item.Value));
+
+                    if (ListaBolsistas)
+                    {
+                        lblMensagem.Text = "⚠️ Este Bolsista já está cadastrado em outro projeto!";
+                        lblMensagem.CssClass = "alert alert-warning d-block";
+                        LimparCampos();
+                        AtualizarGrid();
+                        return;
+                    }
+                }
+            }
+
                 try
             {
                 // Criando o objeto usando o novo Model
@@ -83,10 +110,13 @@ namespace WebApplication1
                 novo.Valor_Bolsa = float.Parse(txtValorBolsa.Text);
                 novo.coordenador = Repositorio.ListaCoordenadores.FirstOrDefault(c => c.CPF == Coordenadores.SelectedValue);
 
-                foreach(ListItem item in ListaTodosBolsistas.Items)
+
+               
+                foreach (ListItem item in ListaTodosBolsistas.Items)
                 {
                     if (item.Selected)
                     {
+
                         Bolsista bolsista = Repositorio.ListaBolsistas.FirstOrDefault(b => b.CPF == (item.Value));
 
                        if (bolsista != null)
@@ -96,8 +126,8 @@ namespace WebApplication1
                     }
                 }
 
-                // 2. ADICIONAR NA LISTA ESTÁTICA
-                Repositorio.ListaProjetos.Add(novo);
+                    // 2. ADICIONAR NA LISTA ESTÁTICA
+                    Repositorio.ListaProjetos.Add(novo);
 
                 LimparCampos();
                 lblMensagem.Text = "Projeto salvo com sucesso!";
@@ -113,7 +143,7 @@ namespace WebApplication1
         }
         protected void gridProjetos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            if(e.CommandName == "MostrarDetalhes")
+            if (e.CommandName == "MostrarDetalhes")
             {
                 int indice = Convert.ToInt32(e.CommandArgument);
 
@@ -122,21 +152,35 @@ namespace WebApplication1
 
                 pnlDetalhes.Visible = true;
 
-                lblTitulo.Text ="Titulo: " + projeto.Titulo;
+                lblTitulo.Text = "Titulo: " + projeto.Titulo;
                 lblArea.Text = "Area: " + projeto.Area;
                 lblVerba.Text = "Verba: " + projeto.Verba;
                 lblValorBolsa.Text = "Valor da Bolsa: " + projeto.Valor_Bolsa;
                 lblCoordenador.Text = "Coordenador: " + projeto.coordenador.Nome;
 
-                
+
 
                 rptBolsistas.DataSource = projeto.ListaBolsistasProjeto;
                 rptBolsistas.DataBind();
+
+
+                if (projeto.ListaBolsistasProjeto.Count == 0)
+                {
+                    lblSemBolsista.Visible = true;
+                }
+                else
+                {
+                    lblSemBolsista.Visible = false;
+                }
+
             }
         }
 
 
-            private void LimparCampos()
+
+
+
+private void LimparCampos()
         {
             txtTitulo.Text = "";
             txtVerba.Text = "";

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Data.SqlClient;
+using System.Configuration;
 
 namespace WebApplication1.Models
 {
@@ -37,5 +39,48 @@ namespace WebApplication1.Models
         {
 
         };
+
+        public class Conexao
+        {
+            public static SqlConnection CriarConexao()
+            {
+                string conexao = ConfigurationManager.ConnectionStrings["Conexao"].ConnectionString;
+
+                return new SqlConnection(conexao);
+            }
+        }
+        public static void SalvarBolsista(Bolsista bolsista)
+        {
+            string conexao = ConfigurationManager
+                .ConnectionStrings["Conexao"]
+                .ConnectionString;
+
+
+            using (SqlConnection conn = new SqlConnection(conexao))
+            {
+                conn.Open();
+
+                string sql = @"INSERT INTO Bolsista
+                              (Nome, Matricula, CPF, Sexo, DataNascimento)
+                              VALUES
+                              (@Nome, @Matricula, @CPF, @Sexo, @DataNascimento)";
+
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+
+                cmd.Parameters.AddWithValue("@Nome", bolsista.Nome);
+                cmd.Parameters.AddWithValue("@Matricula", bolsista.Matricula);
+                cmd.Parameters.AddWithValue("@CPF", bolsista.CPF);
+                cmd.Parameters.AddWithValue("@Sexo", bolsista.Sexo);
+                cmd.Parameters.AddWithValue("@DataNascimento", bolsista.DataNascimento);
+
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        ListarBolsistas();
+
     }
 }
