@@ -12,7 +12,7 @@ namespace WebApplication1
     {
         private void AtualizarGrid()
         {
-            var listaProjetos = Repositorio.ListaProjetos;
+            var listaProjetos = Repositorio.ListarProjeto();
             if (listaProjetos.Count > 0)
             {
                 gridProjetos.DataSource = listaProjetos;
@@ -31,18 +31,18 @@ namespace WebApplication1
             {
                 AtualizarGrid(); 
                 //caso der erro passar codigo abaixo para atualizar grid
-                var ListaCoordenadores = Repositorio.ListaCoordenadores;
+                var ListaCoordenadores = Repositorio.ListarCoordenador();
                     
-                Coordenadores.DataSource = ListaCoordenadores;
+                Coordenadores.DataSource = Repositorio.ListarCoordenador();
                 Coordenadores.DataTextField = "Nome";
-                Coordenadores.DataValueField = "CPF";
+                Coordenadores.DataValueField = "Id";
                 Coordenadores.DataBind();
 
                 Coordenadores.Items.Insert(0, new ListItem("Selecione", ""));
 
-                var ListaBolsistas = Repositorio.ListaBolsistas;
+                var ListaBolsistas = Repositorio.ListarBolsistas();
 
-                ListaTodosBolsistas.DataSource = ListaBolsistas;
+                ListaTodosBolsistas.DataSource = Repositorio.ListarBolsistas();
                 ListaTodosBolsistas.DataTextField = "Nome";
                 ListaTodosBolsistas.DataValueField = "CPF";
                 ListaTodosBolsistas.DataBind();
@@ -64,7 +64,7 @@ namespace WebApplication1
 
            //if(Repositorio) terminar if que bloqueia o cadastro de coordenadores e bolsistas ja cadastrados em outros projetos
             
-            if (Repositorio.ListaProjetos.Any(b => b.Titulo == txtTitulo.Text))
+            if (Repositorio.ListarProjeto().Any(b => b.Titulo == txtTitulo.Text))
             {
                 lblMensagem.Text = "⚠️ Este Projeto já foi cadastrado!";
                 lblMensagem.CssClass = "alert alert-warning d-block";
@@ -73,7 +73,7 @@ namespace WebApplication1
                 return; // Para a execução aqui
             }
 
-            if (Repositorio.ListaProjetos.Any(p => p.coordenador.CPF == Coordenadores.SelectedValue))
+            if (Repositorio.ListarProjeto().Any(p => p.coordenador.CPF == Coordenadores.SelectedValue))
             {
                 lblMensagem.Text = "⚠️ Este Coordenador já está cadastrado em outro projeto!";
                 lblMensagem.CssClass = "alert alert-warning d-block";
@@ -86,7 +86,7 @@ namespace WebApplication1
             {
                 if (item.Selected)
                 {
-                    bool ListaBolsistas = Repositorio.ListaProjetos.Any(p =>
+                    bool ListaBolsistas = Repositorio.ListarProjeto().Any(p =>
                     p.ListaBolsistasProjeto.Any(b => b.CPF == item.Value));
 
                     if (ListaBolsistas)
@@ -108,16 +108,16 @@ namespace WebApplication1
                 novo.Verba = float.Parse(txtVerba.Text);
                 novo.Area = txtArea.Text;
                 novo.Valor_Bolsa = float.Parse(txtValorBolsa.Text);
-                novo.coordenador = Repositorio.ListaCoordenadores.FirstOrDefault(c => c.CPF == Coordenadores.SelectedValue);
+                novo.IdCoordenador = Convert.ToInt32(Coordenadores.SelectedValue);
 
 
-               
+
                 foreach (ListItem item in ListaTodosBolsistas.Items)
                 {
                     if (item.Selected)
                     {
 
-                        Bolsista bolsista = Repositorio.ListaBolsistas.FirstOrDefault(b => b.CPF == (item.Value));
+                        Bolsista bolsista = Repositorio.ListarBolsistas().FirstOrDefault(b => b.CPF == (item.Value));
 
                        if (bolsista != null)
                         {
@@ -127,7 +127,13 @@ namespace WebApplication1
                 }
 
                     // 2. ADICIONAR NA LISTA ESTÁTICA
-                    Repositorio.ListaProjetos.Add(novo);
+                int idProjeto = Repositorio.SalvarProjeto(novo);
+
+                foreach(Bolsista bolsista in novo.ListaBolsistasProjeto)
+                {
+                    Repositorio.SalvarVinculoBolsistaProjeto(idProjeto, bolsista.Id);
+                }
+
 
                 LimparCampos();
                 lblMensagem.Text = "Projeto salvo com sucesso!";
@@ -147,7 +153,7 @@ namespace WebApplication1
             {
                 int indice = Convert.ToInt32(e.CommandArgument);
 
-                Projeto projeto = Repositorio.ListaProjetos[indice];
+                Projeto projeto = Repositorio.ListarProjeto()[indice];
                 //relação de indice da tabela pode não convergir com a posição do objeto na lista
 
                 pnlDetalhes.Visible = true;

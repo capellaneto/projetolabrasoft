@@ -29,7 +29,7 @@ namespace WebApplication1
                 return;
             }
 
-            if (Repositorio.ListaCoordenadores.Any(b => b.CPF == txtCPF.Text))
+            if (Repositorio.ListarCoordenador().Any(b => b.CPF == txtCPF.Text))
             {
                 lblMensagem.Text = "⚠️ Este Coordenador já foi cadastrado!";
                 lblMensagem.CssClass = "alert alert-warning d-block";
@@ -49,7 +49,7 @@ namespace WebApplication1
                 novo.Email = txtEmail.Text;
 
                 // 2. ADICIONAR NA LISTA ESTÁTICA
-                Repositorio.ListaCoordenadores.Add(novo);
+                Repositorio.SalvarCoordenador(novo);
 
                 LimparCampos();
                 lblMensagem.Text = "Coordenador salvo com sucesso!";
@@ -67,7 +67,7 @@ namespace WebApplication1
         protected void btnFiltrarNomeTitulacao_Click(object sender, EventArgs e)
         {
             var busca = txtFiltro.Text.ToLower();
-            var coordenadores = Repositorio.ListaCoordenadores.Where(c => c.Nome.ToLower().Contains(busca) || c.Titulacao.ToLower().Contains(busca)).ToList();
+            var coordenadores = Repositorio.ListarCoordenador().Where(c => c.Nome.ToLower().Contains(busca) || c.Titulacao.ToLower().Contains(busca)).ToList();
 
             if (coordenadores.Count > 0)
             {
@@ -92,7 +92,7 @@ namespace WebApplication1
 
         private void AtualizarGrid()
         {
-            var listaCoordenadores = Repositorio.ListaCoordenadores;
+            var listaCoordenadores = Repositorio.ListarCoordenador();
             if (listaCoordenadores.Count > 0)
             {
                 gridCoordenadores.DataSource = listaCoordenadores;

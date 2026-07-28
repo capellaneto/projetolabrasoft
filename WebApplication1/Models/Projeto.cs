@@ -9,6 +9,9 @@ namespace WebApplication1
 {
     public class Projeto
     {
+        public int Id { get; set; }
+
+        public int IdCoordenador { get; set; }
         public string Titulo { get; set; }
 
         public float Verba { get; set; }
