@@ -73,7 +73,7 @@ namespace WebApplication1
                 return; // Para a execução aqui
             }
 
-            if (Repositorio.ListarProjeto().Any(p => p.coordenador.CPF == Coordenadores.SelectedValue))
+            if (Repositorio.ListarProjeto().Any(p => p.IdCoordenador == Convert.ToInt32(Coordenadores.SelectedValue)))
             {
                 lblMensagem.Text = "⚠️ Este Coordenador já está cadastrado em outro projeto!";
                 lblMensagem.CssClass = "alert alert-warning d-block";
@@ -105,9 +105,9 @@ namespace WebApplication1
                 // Criando o objeto usando o novo Model
                 Projeto novo = new Projeto();
                 novo.Titulo = txtTitulo.Text;
-                novo.Verba = float.Parse(txtVerba.Text);
+                novo.Verba = decimal.Parse(txtVerba.Text);
                 novo.Area = txtArea.Text;
-                novo.Valor_Bolsa = float.Parse(txtValorBolsa.Text);
+                novo.Valor_Bolsa = decimal.Parse(txtValorBolsa.Text);
                 novo.IdCoordenador = Convert.ToInt32(Coordenadores.SelectedValue);
 
 
@@ -136,8 +136,10 @@ namespace WebApplication1
 
 
                 LimparCampos();
-                lblMensagem.Text = "Projeto salvo com sucesso!";
+                lblMensagem.Text = "Projeto salvo com sucesso!"; //verificar mensagem depois
                 lblMensagem.CssClass = "text-success";
+
+                Response.Redirect("CadastroProjeto.aspx");
 
                 AtualizarGrid();
             }
@@ -154,7 +156,8 @@ namespace WebApplication1
                 int indice = Convert.ToInt32(e.CommandArgument);
 
                 Projeto projeto = Repositorio.ListarProjeto()[indice];
-                //relação de indice da tabela pode não convergir com a posição do objeto na lista
+
+                projeto.coordenador = Repositorio.ListarCoordenador().FirstOrDefault(c => c.Id == projeto.IdCoordenador);
 
                 pnlDetalhes.Visible = true;
 
@@ -182,7 +185,10 @@ namespace WebApplication1
             }
         }
 
-
+        protected void btnFecharDetalhes_Click(object sender, EventArgs e)
+        {
+            pnlDetalhes.Visible = false;
+        }
 
 
 

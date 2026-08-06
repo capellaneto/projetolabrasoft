@@ -86,7 +86,7 @@
                                         CommandName="MostrarDetalhes" CommandArgument='<%# Container.DataItemIndex %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-
+                            
                         </Columns>
                     </asp:GridView>
 
@@ -129,6 +129,13 @@
                                        CssClass="text-warning"
                                        Visible="false">
                             </asp:Label>
+                            <asp:Button 
+                                ID="btnFecharDetalhes" 
+                                runat="server" 
+                                Text="Fechar Detalhes"
+                                CssClass="btn btn-secondary mt-3"
+                                OnClick="btnFecharDetalhes_Click" />
+
 
                         </div>
                         </asp:Panel>

@@ -14,14 +14,14 @@ namespace WebApplication1
         public int IdCoordenador { get; set; }
         public string Titulo { get; set; }
 
-        public float Verba { get; set; }
+        public decimal Verba { get; set; }
 
         public Coordenador coordenador { get; set; }
         
         public List<Bolsista> ListaBolsistasProjeto { get; set; } = new List<Bolsista>(); 
         //se a mesma lista for mostrada para todos os projetos, é por conta do static
 
-        public float Valor_Bolsa {  get; set; }
+        public decimal Valor_Bolsa {  get; set; }
 
         public string Area {  get; set; }
     }

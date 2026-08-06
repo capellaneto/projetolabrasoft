@@ -211,10 +211,12 @@ namespace WebApplication1.Models
 
                     b.Id = Convert.ToInt32(reader["ID"]);
                     b.Titulo = reader["Titulo"].ToString();
-                    b.Verba = Convert.ToSingle(reader["VerbaAprovada"]);
+                    b.Verba = Convert.ToDecimal(reader["VerbaAprovada"]);
                     b.IdCoordenador = Convert.ToInt32(reader["CoordenadorID"]);
-                    b.Valor_Bolsa = Convert.ToSingle(reader["ValorBolsaIndividual"]);
+                    b.Valor_Bolsa = Convert.ToDecimal(reader["ValorBolsaIndividual"]);
                     b.Area = reader["AreaConhecimento"].ToString();
+
+                    b.ListaBolsistasProjeto = ListarBolsistasProjeto(b.Id);
 
                     lista.Add(b);
                 }
@@ -238,18 +240,88 @@ namespace WebApplication1.Models
 
                        VALUES
 
-                       (@IdProjeto, @IdBolsista, @DataVinculo)";
+                       (@idProjeto, @idBolsista, @DataVinculo)";
 
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
 
 
-                cmd.Parameters.AddWithValue("@ProjetoID", idProjeto);
-                cmd.Parameters.AddWithValue("@BolsistaID", idBolsista);
+                cmd.Parameters.AddWithValue("@idProjeto", idProjeto);
+                cmd.Parameters.AddWithValue("@idBolsista", idBolsista);
                 cmd.Parameters.AddWithValue("@DataVinculo", DateTime.Now);
 
 
                 cmd.ExecuteNonQuery();
+            }
+        }
+
+        public static List<Bolsista> ListarBolsistasProjeto(int idProjeto)
+        {
+            List<Bolsista> lista = new List<Bolsista>();
+
+            using (SqlConnection conn = Conexao.CriarConexao())
+            {
+                conn.Open();
+
+                string sql = @"
+                      SELECT b.*
+                      FROM Bolsista b
+                      INNER JOIN ProjetoBolsista pb
+                           ON b.Id = pb.BolsistaID
+                      WHERE pb.ProjetoID = @ProjetoID";
+                
+                SqlCommand cmd = new SqlCommand (sql, conn);
+                cmd.Parameters.AddWithValue("@ProjetoID", idProjeto);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Bolsista b = new Bolsista();
+
+                    b.Id = Convert.ToInt32(reader["Id"]);
+                    b.Nome = reader["Nome"].ToString();
+                    b.CPF = reader["CPF"].ToString();
+                    b.Matricula = reader["Matricula"].ToString();
+                    b.Sexo = reader["Sexo"].ToString();
+                    b.DataNascimento = Convert.ToDateTime(reader["DataNascimento"]);
+
+                    lista.Add(b);
+                }
+            }
+            return lista;
+        }
+
+        public static int SalvarDespesa(Despesa despesa)
+        {
+            string conexao = ConfigurationManager
+                .ConnectionStrings["Conexao"]
+                .ConnectionString;
+
+
+            using (SqlConnection conn = new SqlConnection(conexao))
+            {
+                conn.Open();
+
+                string sql = @"INSERT INTO Projeto
+                              (Descricao, Valor, Categoria, ProjetoId)
+                              VALUES
+                              (@Descricao,  @Valor, @Categoria, @ProjetoID);
+
+
+                              SELECT SCOPE_IDENTITY();";
+
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+                cmd.Parameters.AddWithValue("@Descricao", despesa.Descricao);
+                cmd.Parameters.AddWithValue("@Valor", despesa.Valor);
+                cmd.Parameters.AddWithValue("@Categoria", despesa.Categoria);
+                cmd.Parameters.AddWithValue("@ProjetoID", despesa.ProjetoID);
+
+                int idGerado = Convert.ToInt32(cmd.ExecuteScalar());
+
+                return idGerado; //testar função
             }
         }
 
