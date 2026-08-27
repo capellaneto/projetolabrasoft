@@ -82,12 +82,12 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include=".gitignore" />
     <Content Include="BolsistaExemplo.aspx" />
     <Content Include="CadastroBolsista.aspx" />
     <Content Include="CadastroCoordenador.aspx" />
     <Content Include="CadastroProjeto.aspx" />
     <Content Include="Despesa.aspx" />
+    <Content Include="Login_Cadastro.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web\TemplateEmail.html" />
     <Content Include="Web\Formulario.html" />
@@ -127,6 +127,13 @@
     </Compile>
     <Compile Include="Despesa.aspx.designer.cs">
       <DependentUpon>Despesa.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Login_Cadastro.aspx.cs">
+      <DependentUpon>Login_Cadastro.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Login_Cadastro.aspx.designer.cs">
+      <DependentUpon>Login_Cadastro.aspx</DependentUpon>
     </Compile>
     <Compile Include="Models\Despesa.cs" />
     <Compile Include="Models\Bolsista.cs" />

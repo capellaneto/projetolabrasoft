@@ -11,7 +11,12 @@ namespace WebApplication1
 	{
 		protected void Page_Load(object sender, EventArgs e)
 		{
+			AtualizarMenu();
+        }
 
-		}
-	}
+        public void AtualizarMenu()
+        {
+            menuNavegacao.Visible = Session["UsuarioID"] != null;
+        }
+    }
 }
