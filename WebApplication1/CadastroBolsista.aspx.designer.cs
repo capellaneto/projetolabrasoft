@@ -87,6 +87,15 @@ namespace WebApplication1
         protected global::System.Web.UI.WebControls.Panel pnlFiltros;
 
         /// <summary>
+        /// Controle btnFiltrarHomens.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnFiltrarHomens;
+
+        /// <summary>
         /// Controle btnFiltrarMulheres.
         /// </summary>
         /// <remarks>

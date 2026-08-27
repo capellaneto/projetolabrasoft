@@ -13,23 +13,35 @@
                 <div class="form-group mb-3">
                     <label class="form-label font-weight-bold">Nome Completo:</label>
                     <asp:TextBox ID="txtNome" runat="server" CssClass="form-control" placeholder="Ex: João Silva"></asp:TextBox>
+                     <small class="text-danger">
+                      campo obrigatório
+                     </small>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 form-group mb-3">
                         <label class="form-label font-weight-bold">Matrícula:</label>
                         <asp:TextBox ID="txtMatricula" runat="server" CssClass="form-control" placeholder="2024.X.XXXX"></asp:TextBox>
+                         <small class="text-danger">
+                          campo obrigatório
+                         </small>
                     </div>
 
                     <div class="col-md-6 form-group mb-3">
                         <label class="form-label font-weight-bold">CPF:</label>
                         <asp:TextBox ID="txtCPF" runat="server" CssClass="form-control" placeholder="000.000.000-00"></asp:TextBox>
+                         <small class="text-danger">
+                          campo obrigatório
+                         </small>
                     </div>
                 </div>
 
                 <div class="form-group mb-4">
                     <label class="form-label font-weight-bold">Data de Nascimento:</label>
                     <asp:TextBox ID="txtDataNasc" runat="server" TextMode="Date" CssClass="form-control"></asp:TextBox>
+                     <small class="text-danger">
+                      campo obrigatório
+                     </small>
                 </div>
 
                 <div class="form-group mb-3">
@@ -40,6 +52,9 @@
                         <asp:ListItem Text="Feminino" Value="F" />
                         <asp:ListItem Text="Outro" Value="O" />
                     </asp:DropDownList>
+                     <small class="text-danger">
+                      campo obrigatório
+                     </small>
                 </div>
 
 
@@ -57,6 +72,9 @@
                     <asp:Panel ID="pnlFiltros" runat="server" Visible="false">
                         <div class="mt-4 mb-2 d-flex justify-content-between align-items-center">                        
                             <div>
+                               <asp:Button ID="btnFiltrarHomens" runat="server" Text="👨 Filtrar Homens" 
+                                    CssClass="btn btn-outline-info btn-sm" OnClick="btnFiltrarHomens_Click" />
+                                
                                 <asp:Button ID="btnFiltrarMulheres" runat="server" Text="👩 Filtrar Mulheres" 
                                     CssClass="btn btn-outline-info btn-sm" OnClick="btnFiltrarMulheres_Click" />
             

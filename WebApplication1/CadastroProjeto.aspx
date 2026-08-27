@@ -11,7 +11,7 @@
         <div class="card-body p-4">
             <div class="form-group mb-3">
                 <label class="form-label font-weight-bold">Titulo:</label>
-                <asp:TextBox ID="txtTitulo" runat="server" CssClass="form-control"></asp:TextBox>
+                <asp:TextBox ID="txtTitulo" runat="server" CssClass="form-control" placeholder="Nome do Projeto"></asp:TextBox>
                 <small class="text-danger">
                  campo obrigatório
                 </small>
@@ -20,7 +20,7 @@
             <div class="row">
                 <div class="col-md-6 form-group mb-3">
                     <label class="form-label font-weight-bold">Verba:</label>
-                    <asp:TextBox ID="txtVerba" runat="server" CssClass="form-control" placeholder="00"></asp:TextBox>
+                    <asp:TextBox ID="txtVerba" runat="server" CssClass="form-control" placeholder="Verba do Projeto"></asp:TextBox>
                     <small class="text-danger">
                      campo obrigatório
                     </small>
@@ -28,8 +28,8 @@
 
                 <div class="row">
                 <div class="col-md-6 form-group mb-3">
-                    <label class="form-label font-weight-bold">Valor da Bolsa:</label>
-                    <asp:TextBox ID="txtValorBolsa" runat="server" CssClass="form-control" placeholder="00"></asp:TextBox>
+                    <label class="form-label font-weight-bold">Bolsa:</label>
+                    <asp:TextBox ID="txtValorBolsa" runat="server" CssClass="form-control" placeholder="Valor da Bolsa"></asp:TextBox>
                     <small class="text-danger">
                      campo obrigatório
                     </small>
@@ -45,7 +45,7 @@
 
                     <div class="col-md-6 form-group mb-3">
                         <label class="form-label font-weight-bold">Bolsista:</label>
-                                <asp:ListBox ID="ListaTodosBolsistas" runat="server"  CssClass="form-control" SelectionMode="Multiple" Rows="8">    
+                                <asp:ListBox ID="ddlBolsistas" runat="server"  CssClass="form-control" SelectionMode="Multiple" Rows="1">    
                                 </asp:ListBox>
                     </div>
             </div>
@@ -81,6 +81,9 @@
 
                             <asp:TemplateField HeaderText="Ações">
                                 <ItemTemplate>
+                                   
+                                  <div class="d-flex gap-2 align-items-center">
+
                                     <asp:Button
                                         ID= "btnDetalhes" runat="server" Text="Detalhes"
                                         CommandName="MostrarDetalhes" CommandArgument='<%# Container.DataItemIndex %>' />
@@ -112,18 +115,67 @@
 
                           <h5>Bolsistas:</h5>
 
-                            <asp:Repeater ID="rptBolsistas" runat="server">
+                            <asp:Repeater ID="rptBolsistas" runat="server" OnItemCommand="rptBolsistas_ItemCommand">
 
                                 <ItemTemplate>
 
-                                    <div class="card mb-2">
+                                    <div class="card mb-2 p-2">
+
+                                        <div class="d-flex justify-content-between align-items-center">
+
                                         Nome:
                                         <%# Eval("Nome") %>
-                                    </div>
+
+
+                                    <asp:Button ID="btnRemoverBolsista" 
+                                        runat="server" 
+                                        Text="Remover Bolsista"
+                                        CssClass= "btn btn-danger btn-sm"
+                                        CommandName="Remover Bolsista"
+                                        CommandArgument='<%# Eval("Id") %>'/>
+
+                                        </div>
+                                        
 
                                 </ItemTemplate>
 
                             </asp:Repeater>
+
+                            <div class="mt-3">
+
+                                <label class="form-label font-weight-bold">
+                                    Adicionar Bolsista:
+                                </label>
+
+                                <asp:ListBox ID="lstBolsistasDisponiveis" 
+                                    runat="server"
+                                    CssClass="form-control"
+                                    SelectionMode="Multiple"
+                                    Rows="1">
+
+                                </asp:ListBox>
+
+
+                                <asp:Button ID="btnAdicionarBolsista" 
+                                    runat="server"
+                                    Text="Adicionar Bolsista:" 
+                                    CssClass="btn btn-success mt-2" 
+                                    OnClick="btnAdicionarBolsista_Click"/>
+
+                            </div>
+
+                            <asp:GridView ID="GridDespesas" runat="server" 
+                                CssClass="table table-hover table-bordered mt-2" 
+                                AutoGenerateColumns="false">
+
+                                <Columns>
+
+                                    <asp:BoundField DataField="Descricao" HeaderText="´Descricao" />
+                                    <asp:BoundField DataField="Categoria" HeaderText="Categoria" />
+                                    <asp:BoundField DataField="Valor" HeaderText="´VerValor" />
+                                    <asp:BoundField DataField="Data" HeaderText="´Data" />
+                                </Columns>
+                            </asp:GridView>
 
                             <asp:Label ID="lblSemBolsista" runat="server" Text="⚠️ Este projeto não possui bolsistas cadastrados"
                                        CssClass="text-warning"

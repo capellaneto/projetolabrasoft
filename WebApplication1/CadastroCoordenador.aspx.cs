@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 using WebApplication1.Models;
 
 namespace WebApplication1
@@ -102,6 +104,84 @@ namespace WebApplication1
             else
             {
                 lblAviso.Visible = true;
+            }
+        }
+
+
+    
+
+
+        protected void gridCoordenadores_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            GridViewRow linha = (GridViewRow)((Control)e.CommandSource).NamingContainer;
+
+            Panel painel = (Panel)linha.FindControl("pnlAtualizarEmail");
+
+            if (e.CommandName == "Excluir Coordenador")
+            {
+                int id = Convert.ToInt32(e.CommandArgument);
+
+                try
+                {
+                    Repositorio.ExcluirCoordenador (id);
+
+                    lblMensagem.Text = "Coordenador excluido com sucesso!";
+                    lblMensagem.Visible = true;
+                    AtualizarGrid();
+                }
+
+                catch (Exception ex)
+                {
+                    lblMensagem.Text = "Não foi possivel excluir este coordenador, erro: " +ex;
+                    lblMensagem.Visible = true;
+                }
+            }
+            
+            else if (e.CommandName == "Atualizar")
+            {
+                painel.Visible = true;
+
+                Button btnAtualizar = (Button)linha.FindControl("btnAtualizar");
+                btnAtualizar.Visible = false;
+            }
+
+            else if (e.CommandName == "Cancelar")
+            {
+                painel.Visible = false;
+                
+                Button btnAtualizar = (Button)linha.FindControl("btnAtualizar");
+                btnAtualizar.Visible = true;
+            }
+
+            else if (e.CommandName == "Confirmar")
+            {
+                TextBox txtNovoEmail = (TextBox)linha.FindControl("txtNovoEmail");
+
+                string novoEmail = txtNovoEmail.Text.Trim();
+
+                if (string.IsNullOrWhiteSpace(novoEmail))
+                {
+                    lblMensagem.Text = "⚠️ Digite um novo e-mail.";
+                    lblMensagem.CssClass = "text-danger";
+                    return;
+                }
+
+                int id = Convert.ToInt32(e.CommandArgument);
+
+                try
+                {
+                    Repositorio.AtualizarEmailCoordenador(id, novoEmail);
+
+                    lblMensagem.Text = "E-mail atualizado com sucesso!";
+                    lblMensagem.CssClass = "text-success";
+
+                    AtualizarGrid();
+                }
+                catch (Exception)
+                {
+                    lblMensagem.Text = "Erro ao atualizar o e-mail.";
+                    lblMensagem.CssClass = "text-danger";
+                }
             }
         }
 

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
-using System.Data.SqlClient;
-using System.Configuration;
+using static WebApplication1.Models.Repositorio;
 
 namespace WebApplication1.Models
 {
@@ -303,10 +304,10 @@ namespace WebApplication1.Models
             {
                 conn.Open();
 
-                string sql = @"INSERT INTO Projeto
-                              (Descricao, Valor, Categoria, ProjetoId)
+                string sql = @"INSERT INTO Despesas
+                              (Descricao, Valor, Data, Categoria, ProjetoID)
                               VALUES
-                              (@Descricao,  @Valor, @Categoria, @ProjetoID);
+                              (@Descricao,  @Valor, @Data, @Categoria, @ProjetoID);
 
 
                               SELECT SCOPE_IDENTITY();";
@@ -316,12 +317,122 @@ namespace WebApplication1.Models
 
                 cmd.Parameters.AddWithValue("@Descricao", despesa.Descricao);
                 cmd.Parameters.AddWithValue("@Valor", despesa.Valor);
+                cmd.Parameters.AddWithValue("@Data", despesa.Data);
                 cmd.Parameters.AddWithValue("@Categoria", despesa.Categoria);
                 cmd.Parameters.AddWithValue("@ProjetoID", despesa.ProjetoID);
 
                 int idGerado = Convert.ToInt32(cmd.ExecuteScalar());
 
                 return idGerado; //testar função
+            }
+        }
+
+        public static List<Despesa> ListarDespesas()
+        {
+            List<Despesa> lista = new List<Despesa>();
+
+            using (SqlConnection conn = Conexao.CriarConexao())
+            {
+                conn.Open();
+
+                string sql = "SELECT * FROM Despesas";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Despesa b = new Despesa();
+
+                    b.Descricao = reader["Descricao"].ToString();
+                    b.Valor = Convert.ToDecimal(reader["Valor"]);
+                    b.Categoria = reader["Categoria"].ToString();
+                    b.ProjetoID = Convert.ToInt32(reader["ProjetoID"]);
+                    b.Data = Convert.ToDateTime(reader["Data"]);
+
+                    lista.Add(b);
+                }
+            }
+            return lista;
+        }
+
+        public static void AtualizarEmailCoordenador(int id, string NovoEmail)
+        {
+            string conexao = ConfigurationManager.ConnectionStrings["Conexao"].ConnectionString;
+
+
+            using (SqlConnection conn = new SqlConnection(conexao))
+            {
+                conn.Open();
+
+                string sql = @"UPDATE Coordenador
+                               SET Email = @Email
+                               WHERE Id = @Id";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+                cmd.Parameters.AddWithValue("@Email", NovoEmail);
+                cmd.Parameters.AddWithValue("@Id", id);
+                
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public static void ExcluirCoordenador  (int IdCoordenador)
+        {
+            string conexao = ConfigurationManager.ConnectionStrings["Conexao"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(conexao))
+            {
+                conn.Open();
+
+                string sql = "DELETE FROM Coordenador WHERE ID = @ID";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+                cmd.Parameters.AddWithValue("@ID", IdCoordenador);
+
+                cmd.ExecuteNonQuery ();
+                               
+                             
+            }
+        }
+
+        public static void ExcluirProjeto(int IdProjeto)
+        {
+            string conexao = ConfigurationManager.ConnectionStrings["Conexao"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(conexao))
+            {
+                conn.Open();
+
+                string sql = "DELETE FROM Projeto WHERE ID = @ID";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+                cmd.Parameters.AddWithValue("@ID", IdProjeto);
+
+                cmd.ExecuteNonQuery(); //atividade extra, finalizar
+            }
+        }
+
+        public static void ExcluirBolsistaProjeto(int IdProjeto, int IdBolsista)
+        {
+            string conexao = ConfigurationManager.ConnectionStrings["Conexao"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(conexao))
+            {
+                conn.Open();
+
+                string sql = "DELETE FROM ProjetoBolsista WHERE ProjetoID = @ProjetoID AND BolsistaID = @BolsistaID";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+                cmd.Parameters.AddWithValue("@ProjetoID", IdProjeto);
+                cmd.Parameters.AddWithValue("@BolsistaID", IdBolsista);
+
+                cmd.ExecuteNonQuery(); 
             }
         }
 

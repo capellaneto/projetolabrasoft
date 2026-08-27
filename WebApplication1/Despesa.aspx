@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Despesa.aspx.cs" Inherits="WebApplication1.Despesa1" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Despesa.aspx.cs" Inherits="WebApplication1.Despesa1" Async="true" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -16,29 +16,55 @@
             <div class="form-group mb-3">
                 <label class="form-label font-weight-bold">Descrição:</label>
                 <asp:TextBox ID="txtDescricao" runat="server" CssClass="form-control" placeholder="Digite a descrição"></asp:TextBox>
+                 <small class="text-danger">
+                  campo obrigatório
+                 </small>
             </div>
 
-            <div class="form-group mb-3">
-                <label class="form-label font-weight-bold">Categoria:</label>
-                <asp:TextBox ID="txtCategoria" runat="server" CssClass="form-control" placeholder="Digite a Categoria"></asp:TextBox>
-            </div>
+             <div class="form-group mb-3">
+                 <label class="form-label font-weight-bold"> Categoria:</label>
+                 <asp:DropDownList ID="ddlCategoria" runat="server" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="ddlCategoria_SelectedIndexChanged">
+                     <asp:ListItem Text="Selecione..." Value="" />
+                     <asp:ListItem Text="Material" Value="Material" />
+                     <asp:ListItem Text="Manutenção" Value="Manutenção" />
+                     <asp:ListItem Text="Transporte" Value="Transporte" />
+                     <asp:ListItem Text="Alimentação" Value="Alimentação" />
+                     <asp:ListItem Text="Outro" Value="Outro" />
+                 </asp:DropDownList>
+                  <small class="text-danger">
+                  campo obrigatório
+                 </small>
+             </div>
+
+                <asp:TextBox ID="txtOutraCategoria" runat="server" Visible="false" placeholder="Digite a categoria">
+                    
+                </asp:TextBox>
 
             <div class="row">
                 <div class="col-md-6 form-group mb-3">
                     <label class="form-label font-weight-bold">Valor:</label>
                     <asp:TextBox ID="txtValor" runat="server" CssClass="form-control" placeholder="Digite o valor"></asp:TextBox>
+                     <small class="text-danger">
+                      campo obrigatório
+                     </small>
                 </div>
 
                 <div class="col-md-6 form-group mb-3">
-                    <label class="form-label font-weight-bold">Projeto:</label>
-                    <asp:DropDownList ID="ddlProjeto" runat="server" CssClass="form-control">
+                    <label class="form-label font-weight-bold">Projetos:</label>
+                    <asp:DropDownList ID="ddlProjetos" runat="server" CssClass="form-control">
                     </asp:DropDownList>
+                     <small class="text-danger">
+                      campo obrigatório
+                     </small>
                 </div>
             </div>
 
             <div class="form-group mb-4">
                 <label class="form-label font-weight-bold">Data</label>
                 <asp:TextBox ID="txtData" runat="server" TextMode="Date" CssClass="form-control"></asp:TextBox>
+                 <small class="text-danger">
+                  campo obrigatório
+                 </small>
             </div>
 
             <div class="d-grid gap-2">

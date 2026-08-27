@@ -51,13 +51,13 @@ namespace WebApplication1
         protected global::System.Web.UI.WebControls.DropDownList Coordenadores;
 
         /// <summary>
-        /// Controle ListaTodosBolsistas.
+        /// Controle ddlBolsistas.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ListBox ListaTodosBolsistas;
+        protected global::System.Web.UI.WebControls.ListBox ddlBolsistas;
 
         /// <summary>
         /// Controle txtArea.
@@ -157,6 +157,33 @@ namespace WebApplication1
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptBolsistas;
+
+        /// <summary>
+        /// Controle lstBolsistasDisponiveis.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListBox lstBolsistasDisponiveis;
+
+        /// <summary>
+        /// Controle btnAdicionarBolsista.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAdicionarBolsista;
+
+        /// <summary>
+        /// Controle GridDespesas.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView GridDespesas;
 
         /// <summary>
         /// Controle lblSemBolsista.

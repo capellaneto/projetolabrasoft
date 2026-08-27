@@ -24,13 +24,22 @@ namespace WebApplication1
         protected global::System.Web.UI.WebControls.TextBox txtDescricao;
 
         /// <summary>
-        /// Controle txtCategoria.
+        /// Controle ddlCategoria.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCategoria;
+        protected global::System.Web.UI.WebControls.DropDownList ddlCategoria;
+
+        /// <summary>
+        /// Controle txtOutraCategoria.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtOutraCategoria;
 
         /// <summary>
         /// Controle txtValor.
@@ -42,13 +51,13 @@ namespace WebApplication1
         protected global::System.Web.UI.WebControls.TextBox txtValor;
 
         /// <summary>
-        /// Controle ddlProjeto.
+        /// Controle ddlProjetos.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlProjeto;
+        protected global::System.Web.UI.WebControls.DropDownList ddlProjetos;
 
         /// <summary>
         /// Controle txtData.

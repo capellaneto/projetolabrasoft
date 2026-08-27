@@ -29,27 +29,26 @@ namespace WebApplication1
         {
             if(!IsPostBack)
             {
-                AtualizarGrid(); 
-                //caso der erro passar codigo abaixo para atualizar grid
-                var ListaCoordenadores = Repositorio.ListarCoordenador();
-                    
-                Coordenadores.DataSource = Repositorio.ListarCoordenador();
-                Coordenadores.DataTextField = "Nome";
-                Coordenadores.DataValueField = "Id";
-                Coordenadores.DataBind();
+                AtualizarGrid();
 
-                Coordenadores.Items.Insert(0, new ListItem("Selecione", ""));
+                CarregarCoordenadores();
 
-                var ListaBolsistas = Repositorio.ListarBolsistas();
+                CarregarBolsistas();
 
-                ListaTodosBolsistas.DataSource = Repositorio.ListarBolsistas();
-                ListaTodosBolsistas.DataTextField = "Nome";
-                ListaTodosBolsistas.DataValueField = "CPF";
-                ListaTodosBolsistas.DataBind();
-
-                ListaTodosBolsistas.Items.Insert(0, new ListItem("Selecione", ""));
+                CarregarBolsistasDisponiveis();
             }
         }
+
+        protected void Atualizar_Bolsistas(int IDProjeto)
+        {
+            Projeto projeto = Repositorio.ListarProjeto()
+            .FirstOrDefault(p => p.Id == IDProjeto);
+
+
+            rptBolsistas.DataSource = projeto.ListaBolsistasProjeto;
+            rptBolsistas.DataBind();
+        }
+
         protected void btnSalvar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtTitulo.Text) ||
@@ -82,12 +81,12 @@ namespace WebApplication1
                 return;
             }
 
-            foreach (ListItem item in ListaTodosBolsistas.Items)
+            foreach (ListItem item in ddlBolsistas.Items)
             {
                 if (item.Selected)
                 {
                     bool ListaBolsistas = Repositorio.ListarProjeto().Any(p =>
-                    p.ListaBolsistasProjeto.Any(b => b.CPF == item.Value));
+                    p.ListaBolsistasProjeto.Any(b => b.Id == Convert.ToInt32(item.Value)));
 
                     if (ListaBolsistas)
                     {
@@ -112,12 +111,12 @@ namespace WebApplication1
 
 
 
-                foreach (ListItem item in ListaTodosBolsistas.Items)
+                foreach (ListItem item in ddlBolsistas.Items)
                 {
                     if (item.Selected)
                     {
 
-                        Bolsista bolsista = Repositorio.ListarBolsistas().FirstOrDefault(b => b.CPF == (item.Value));
+                        Bolsista bolsista = Repositorio.ListarBolsistas().FirstOrDefault(b => b.Id == Convert.ToInt32(item.Value));
 
                        if (bolsista != null)
                         {
@@ -157,9 +156,13 @@ namespace WebApplication1
 
                 Projeto projeto = Repositorio.ListarProjeto()[indice];
 
+                ViewState["ProjetoID"] = projeto.Id;
+
                 projeto.coordenador = Repositorio.ListarCoordenador().FirstOrDefault(c => c.Id == projeto.IdCoordenador);
 
                 pnlDetalhes.Visible = true;
+
+                CarregarBolsistasDisponiveis();
 
                 lblTitulo.Text = "Titulo: " + projeto.Titulo;
                 lblArea.Text = "Area: " + projeto.Area;
@@ -182,8 +185,180 @@ namespace WebApplication1
                     lblSemBolsista.Visible = false;
                 }
 
+                var DespesasProjeto = Repositorio.ListarDespesas().Where(d => d.ProjetoID == projeto.Id).ToList();
+
+                GridDespesas.DataSource = DespesasProjeto;
+                GridDespesas.DataBind();
+
+            }
+            
+        }
+
+        private void CarregarCoordenadores()
+        {
+            List<Coordenador> coordenadores = Repositorio.ListarCoordenador();
+            List<Projeto> projetos = Repositorio.ListarProjeto();
+
+            List<Coordenador> CoordenadoresDisponiveis = new List<Coordenador>();
+
+            foreach (Coordenador coordenador in coordenadores)
+            {
+                bool EstaEmProjeto = false;
+
+                foreach (Projeto projeto in projetos)
+                {
+                    if (projeto.IdCoordenador == coordenador.Id)
+                    {
+                        EstaEmProjeto = true;
+                    }
+                }
+                if(!EstaEmProjeto)
+                {
+                    CoordenadoresDisponiveis.Add(coordenador);
+                }
+            }
+
+            Coordenadores.DataSource = CoordenadoresDisponiveis;
+            Coordenadores. DataTextField = "Nome";
+            Coordenadores.DataValueField = "Id";
+            Coordenadores.DataBind();
+
+            Coordenadores.Items.Insert(0, new ListItem("Selecione", ""));
+        }
+
+        private void CarregarBolsistas()
+        {
+            List<Bolsista> bolsistas = Repositorio.ListarBolsistas();
+            List<Projeto> projetos = Repositorio.ListarProjeto();
+
+            List<Bolsista> ListaDisponiveis = new List<Bolsista>();
+
+            foreach (Bolsista bolsista in bolsistas)
+            {
+                bool EstaEmProjeto = false;
+
+                foreach (Projeto projeto in projetos)
+                {
+                    foreach (Bolsista bolsistaProjeto in projeto.ListaBolsistasProjeto)
+                    {
+
+                        if (bolsistaProjeto.Id == bolsista.Id)
+                        {
+                            EstaEmProjeto = true;
+                        }
+                    }
+                }
+                if (!EstaEmProjeto)
+                {
+                    ListaDisponiveis.Add(bolsista);
+                }
+            }
+
+            ddlBolsistas.DataSource = ListaDisponiveis;
+            ddlBolsistas.DataTextField = "Nome";
+            ddlBolsistas.DataValueField = "Id";
+            ddlBolsistas.DataBind();
+
+            ddlBolsistas.Items.Insert(0, new ListItem("Selecione", ""));
+        }
+
+
+        private void AdicionarBolsistaProjeto()
+        {
+            int projetoID = Convert.ToInt32(ViewState["ProjetoID"]);
+
+            foreach(ListItem item in lstBolsistasDisponiveis.Items)
+            {
+                if(item.Selected)
+                {
+                    int bolsistaID = Convert.ToInt32(item.Value);
+
+                    Repositorio.SalvarVinculoBolsistaProjeto(projetoID, bolsistaID);
+                }
+            }
+            Atualizar_Bolsistas(projetoID);
+            CarregarBolsistasDisponiveis();
+            CarregarBolsistas();
+        }
+
+
+        protected void btnAdicionarBolsista_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                AdicionarBolsistaProjeto();
+
+                lblMensagem.Text = "Bolsista adicionado com sucesso!";
+                lblMensagem.CssClass = "alert alert-success d-block";
+            }
+            catch (Exception ex)
+            {
+                lblMensagem.Text = "Não foi posivel cadastrar o bolsista!";
+                lblMensagem.CssClass = "alert alert-danger d-block";
             }
         }
+
+
+        private void CarregarBolsistasDisponiveis()
+        {
+            List<Bolsista> bolsistas = Repositorio.ListarBolsistas();
+            List<Projeto> projetos = Repositorio.ListarProjeto();
+
+            List<Bolsista> BolsistasDisponiveis = new List<Bolsista>();
+
+            foreach (Bolsista bolsista in bolsistas)
+            {
+                bool EstaEmProjeto = false;
+
+                foreach (Projeto projeto in projetos)
+                {
+                    foreach (Bolsista bolsistaProjeto in projeto.ListaBolsistasProjeto)
+                    {
+
+                        if (bolsistaProjeto.Id == bolsista.Id)
+                        {
+                            EstaEmProjeto = true;
+                        }
+                    }
+                }
+                if (!EstaEmProjeto)
+                {
+                    BolsistasDisponiveis.Add(bolsista);
+                }
+            }
+
+            lstBolsistasDisponiveis.DataSource = BolsistasDisponiveis;
+            lstBolsistasDisponiveis.DataTextField = "Nome";
+            lstBolsistasDisponiveis.DataValueField = "Id";
+            lstBolsistasDisponiveis.DataBind();
+
+
+        }
+
+
+        protected void rptBolsistas_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+                int idBolsista = Convert.ToInt32(e.CommandArgument);
+                int ProjetoID = Convert.ToInt32(ViewState["ProjetoID"]);
+
+                try
+                {
+                    Repositorio.ExcluirBolsistaProjeto(ProjetoID, idBolsista);
+
+                    lblMensagem.Text = "Bolsista excluido com sucesso";
+                    lblMensagem.Visible = true;
+                    Atualizar_Bolsistas(ProjetoID);
+
+                    CarregarBolsistas();
+                    CarregarBolsistasDisponiveis();
+
+            }
+                catch (Exception ex)
+                {
+                    lblMensagem.Text = "Não foi possivel excluir este bolsista, erro: " + ex;
+                    lblMensagem.Visible = true;
+                }
+            }
 
         protected void btnFecharDetalhes_Click(object sender, EventArgs e)
         {
@@ -199,7 +374,7 @@ private void LimparCampos()
             txtValorBolsa.Text = "";
             txtArea.Text = "";
             Coordenadores.SelectedIndex = 0;
-            ListaTodosBolsistas.SelectedIndex = 0;
+            ddlBolsistas.SelectedIndex = 0;
             txtTitulo.Focus();
         }
 

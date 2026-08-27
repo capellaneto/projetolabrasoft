@@ -35,12 +35,11 @@ namespace WebApplication1
                 lblMensagem.CssClass = "alert alert-warning d-block";
                 LimparCampos();
                 AtualizarGrid();
-                return; // Para a execução aqui
+                return; 
             }
 
             try
             {
-                // 1. Instanciar e preencher o objeto (conforme você já fez)
                 Bolsista novo = new Bolsista();
                 novo.Nome = txtNome.Text;
                 novo.Matricula = txtMatricula.Text;
@@ -48,17 +47,13 @@ namespace WebApplication1
                 novo.Sexo = ddlSexo.SelectedValue;
                 novo.DataNascimento = DateTime.Parse(txtDataNasc.Text);
 
-                // 2. ADICIONAR NA LISTA ESTÁTICA
                 Repositorio.SalvarBolsista(novo);
 
-                // 3. Limpar os campos para o próximo cadastro
                 LimparCampos();
 
-                // 4. Mensagem de sucesso e atualizar visualização
                 lblMensagem.Text = "Bolsista cadastrado com sucesso!";
                 lblMensagem.CssClass = "alert alert-success d-block";
 
-                // Chamar o método que atualiza o GridView (veremos abaixo)
 
                 AtualizarGrid();
             }
@@ -72,7 +67,6 @@ namespace WebApplication1
         {
             LimparCampos();
 
-            // Aproveite para limpar a mensagem de erro/sucesso também
             lblMensagem.Text = "";
             lblMensagem.CssClass = "";
         }
@@ -85,7 +79,7 @@ namespace WebApplication1
             txtCPF.Text = "";
             txtDataNasc.Text = "";
             ddlSexo.SelectedIndex = 0;
-            txtNome.Focus(); // Coloca o cursor de volta no Nome
+            txtNome.Focus();
         }
 
         private void AtualizarGrid()
@@ -112,7 +106,19 @@ namespace WebApplication1
             }
         }
 
-        // 1. FILTRO: Mostra apenas quem tem Sexo == "F"
+
+        protected void btnFiltrarHomens_Click(object sender, EventArgs e)
+        {
+            var listaBolsistas = Repositorio.ListarBolsistas();
+            var resultado = listaBolsistas.Where(x => x.Sexo == "M").ToList();
+
+            gridBolsistas.DataSource = resultado;
+            gridBolsistas.DataBind();
+
+            lblMensagem.Text = $"Exibindo {resultado.Count} Homens encontrados.";
+            lblMensagem.CssClass = "alert alert-info d-block";
+        }
+
         protected void btnFiltrarMulheres_Click(object sender, EventArgs e)
         {
             var listaBolsistas = Repositorio.ListarBolsistas();
@@ -125,7 +131,7 @@ namespace WebApplication1
             lblMensagem.CssClass = "alert alert-info d-block";
         }
 
-        // 2. ORDENAÇÃO: Organiza a lista por nome
+
         protected void btnOrdemAlfabetica_Click(object sender, EventArgs e)
         {
             var listaBolsistas = Repositorio.ListarBolsistas();
@@ -138,11 +144,11 @@ namespace WebApplication1
             lblMensagem.CssClass = "alert alert-secondary d-block";
         }
 
-        // 3. RESET: Volta a exibir a lista original completa
+
         protected void btnVerTodos_Click(object sender, EventArgs e)
         {
             AtualizarGrid();
-            lblMensagem.Text = "Exibindo lista completa.";
+            lblMensagem.Text = "Lista completa.";
             lblMensagem.CssClass = "alert alert-light d-block border";
         }
     }

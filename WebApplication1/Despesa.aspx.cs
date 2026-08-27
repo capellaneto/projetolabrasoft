@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using WebApplication1.Models;
+using WebApplication1.Service;
 
 namespace WebApplication1
 {
@@ -18,26 +19,40 @@ namespace WebApplication1
             }
         }
 
+
         private void CarregarProjetos()
         {
-            ddlProjeto.DataSource = Repositorio.ListarProjeto();
 
-            ddlProjeto.DataTextField = "Titulo";
-           
-            ddlProjeto.DataValueField = "Id";
+            ddlProjetos.DataSource = Repositorio.ListarProjeto();
 
-            ddlProjeto.DataBind();
+            ddlProjetos.DataTextField = "Titulo";
 
-            ddlProjeto.Items.Insert(0, new ListItem("Selecione um projeto", ""));
+            ddlProjetos.DataValueField = "Id";
+
+            ddlProjetos.DataBind();
+
+            ddlProjetos.Items.Insert(0, new ListItem("Selecione um projeto", ""));
         }
 
+        protected void ddlCategoria_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(ddlCategoria.SelectedValue == "Outro")
+            {
+                txtOutraCategoria.Visible = true;
+            }
+            else
+            {
+                txtOutraCategoria.Visible = false;
+            }
+        }
 
-        protected void btnSalvar_Click(object sender, EventArgs e)
+        protected async void btnSalvar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtDescricao.Text) ||
-            string.IsNullOrWhiteSpace(txtValor.Text) || 
-            string.IsNullOrWhiteSpace(txtData.Text) || 
-            string.IsNullOrWhiteSpace(txtCategoria.Text))
+            string.IsNullOrWhiteSpace(txtValor.Text) ||
+            string.IsNullOrWhiteSpace(txtData.Text) ||  
+            ddlCategoria.SelectedValue == "" ||
+                ddlProjetos.SelectedIndex <= 0)
             {
                 lblMensagem.Text = "⚠️ Por favor, preencha todos os campos corretamente antes de salvar.";
                 lblMensagem.CssClass = "alert alert-warning d-block";
@@ -49,11 +64,71 @@ namespace WebApplication1
                 Despesa novo = new Despesa();
                 novo.Descricao = txtDescricao.Text;
                 novo.Valor = decimal.Parse(txtValor.Text);
-                novo.Categoria = txtCategoria.Text;
                 novo.Data = DateTime.Parse(txtData.Text);
+                novo.ProjetoID = Convert.ToInt32(ddlProjetos.SelectedValue);
+                if (ddlCategoria.SelectedValue == "Outro")
+                {
+                    novo.Categoria = txtOutraCategoria.Text;
+                }
+                else
+                {
+                    novo.Categoria = ddlCategoria.SelectedValue;
+                }
 
-                lblMensagem.Text = "Despesa cadastrada com sucesso.";
-                lblMensagem.CssClass = "alert alert-success d-block";
+                Repositorio.SalvarDespesa(novo);
+
+                var projetos = Repositorio.ListarProjeto();
+
+                var projetoSelecionado = projetos
+                    .FirstOrDefault(p => p.Id == novo.ProjetoID);
+
+
+                if (projetoSelecionado == null)
+                {
+                    lblMensagem.Text = "Projeto não encontrado.";
+                    lblMensagem.CssClass = "alert alert-danger d-block";
+                    return;
+                }
+
+                var coordenador = Repositorio.ListarCoordenador()
+                    .FirstOrDefault(c => c.Id == projetoSelecionado.IdCoordenador);
+
+
+                if (coordenador == null)
+                {
+                    lblMensagem.Text = "Coordenador do projeto não encontrado.";
+                    lblMensagem.CssClass = "alert alert-danger d-block";
+                    return;
+                }
+
+
+
+                    EmailService emailService = new EmailService();
+
+                    bool emailEnviado = await emailService.EnviarNotificacaoDespesa(
+                        "labrasoft.ifba@gmail.com",
+                        coordenador.Nome,
+                        novo.Descricao,
+                        novo.Valor,
+                        novo.Data,
+                        coordenador.Nome
+                    );
+
+                    if (emailEnviado)
+                    {
+                        lblMensagem.Text = "Despesa cadastrada e e-mail enviado com sucesso.";
+                        lblMensagem.CssClass = "alert alert-success d-block";
+                    }
+                    else
+                    {
+                        lblMensagem.Text = "Despesa cadastrada, mas o e-mail não pôde ser enviado.";
+                        lblMensagem.CssClass = "alert alert-warning d-block";
+                    }
+
+
+                
+
+                LimparCampos();
             }
 
             catch (Exception)
@@ -73,9 +148,13 @@ namespace WebApplication1
         {
             txtDescricao.Text = "";
             txtValor.Text = "";
-            txtCategoria.Text = "";
+            ddlCategoria.SelectedValue = "";
             txtData.Text = "";
-            ddlProjeto.SelectedIndex = 0;
+            txtOutraCategoria.Text = "";
+            txtOutraCategoria.Visible = false;
+
+            if (ddlProjetos.Items.Count > 0)
+                ddlProjetos.SelectedIndex = 0;
         }
     }
 }
