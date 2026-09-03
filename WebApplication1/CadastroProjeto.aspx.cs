@@ -12,7 +12,7 @@ namespace WebApplication1
     {
         private void AtualizarGrid()
         {
-            var listaProjetos = Repositorio.ListarProjeto();
+            var listaProjetos = ProjetoRepositorio.ListarProjeto();
             if (listaProjetos.Count > 0)
             {
                 gridProjetos.DataSource = listaProjetos;
@@ -27,7 +27,7 @@ namespace WebApplication1
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if(!IsPostBack)
+            if (!IsPostBack)
             {
                 AtualizarGrid();
 
@@ -41,7 +41,7 @@ namespace WebApplication1
 
         protected void Atualizar_Bolsistas(int IDProjeto)
         {
-            Projeto projeto = Repositorio.ListarProjeto()
+            Projeto projeto = ProjetoRepositorio.ListarProjeto()
             .FirstOrDefault(p => p.Id == IDProjeto);
 
 
@@ -63,7 +63,7 @@ namespace WebApplication1
 
            //if(Repositorio) terminar if que bloqueia o cadastro de coordenadores e bolsistas ja cadastrados em outros projetos
             
-            if (Repositorio.ListarProjeto().Any(b => b.Titulo == txtTitulo.Text))
+            if (ProjetoRepositorio.ListarProjeto().Any(b => b.Titulo == txtTitulo.Text))
             {
                 lblMensagem.Text = "⚠️ Este Projeto já foi cadastrado!";
                 lblMensagem.CssClass = "alert alert-warning d-block";
@@ -72,7 +72,7 @@ namespace WebApplication1
                 return; // Para a execução aqui
             }
 
-            if (Repositorio.ListarProjeto().Any(p => p.IdCoordenador == Convert.ToInt32(Coordenadores.SelectedValue)))
+            if (ProjetoRepositorio.ListarProjeto().Any(p => p.IdCoordenador == Convert.ToInt32(Coordenadores.SelectedValue)))
             {
                 lblMensagem.Text = "⚠️ Este Coordenador já está cadastrado em outro projeto!";
                 lblMensagem.CssClass = "alert alert-warning d-block";
@@ -85,7 +85,7 @@ namespace WebApplication1
             {
                 if (item.Selected)
                 {
-                    bool ListaBolsistas = Repositorio.ListarProjeto().Any(p =>
+                    bool ListaBolsistas = ProjetoRepositorio.ListarProjeto().Any(p =>
                     p.ListaBolsistasProjeto.Any(b => b.Id == Convert.ToInt32(item.Value)));
 
                     if (ListaBolsistas)
@@ -116,7 +116,7 @@ namespace WebApplication1
                     if (item.Selected)
                     {
 
-                        Bolsista bolsista = Repositorio.ListarBolsistas().FirstOrDefault(b => b.Id == Convert.ToInt32(item.Value));
+                        Bolsista bolsista = BolsistaRepositorio.ListarBolsistas().FirstOrDefault(b => b.Id == Convert.ToInt32(item.Value));
 
                        if (bolsista != null)
                         {
@@ -126,7 +126,7 @@ namespace WebApplication1
                 }
 
                     // 2. ADICIONAR NA LISTA ESTÁTICA
-                int idProjeto = Repositorio.SalvarProjeto(novo);
+                int idProjeto = ProjetoRepositorio.SalvarProjeto(novo);
 
                 foreach(Bolsista bolsista in novo.ListaBolsistasProjeto)
                 {
@@ -154,11 +154,11 @@ namespace WebApplication1
             {
                 int indice = Convert.ToInt32(e.CommandArgument);
 
-                Projeto projeto = Repositorio.ListarProjeto()[indice];
+                Projeto projeto = ProjetoRepositorio.ListarProjeto()[indice];
 
                 ViewState["ProjetoID"] = projeto.Id;
 
-                projeto.coordenador = Repositorio.ListarCoordenador().FirstOrDefault(c => c.Id == projeto.IdCoordenador);
+                projeto.coordenador = CoordenadorRepositorio.ListarCoordenador().FirstOrDefault(c => c.Id == projeto.IdCoordenador);
 
                 pnlDetalhes.Visible = true;
 
@@ -196,8 +196,8 @@ namespace WebApplication1
 
         private void CarregarCoordenadores()
         {
-            List<Coordenador> coordenadores = Repositorio.ListarCoordenador();
-            List<Projeto> projetos = Repositorio.ListarProjeto();
+            List<Coordenador> coordenadores = CoordenadorRepositorio.ListarCoordenador();
+            List<Projeto> projetos = ProjetoRepositorio.ListarProjeto();
 
             List<Coordenador> CoordenadoresDisponiveis = new List<Coordenador>();
 
@@ -228,8 +228,8 @@ namespace WebApplication1
 
         private void CarregarBolsistas()
         {
-            List<Bolsista> bolsistas = Repositorio.ListarBolsistas();
-            List<Projeto> projetos = Repositorio.ListarProjeto();
+            List<Bolsista> bolsistas = BolsistaRepositorio.ListarBolsistas();
+            List<Projeto> projetos = ProjetoRepositorio.ListarProjeto();
 
             List<Bolsista> ListaDisponiveis = new List<Bolsista>();
 
@@ -301,8 +301,8 @@ namespace WebApplication1
 
         private void CarregarBolsistasDisponiveis()
         {
-            List<Bolsista> bolsistas = Repositorio.ListarBolsistas();
-            List<Projeto> projetos = Repositorio.ListarProjeto();
+            List<Bolsista> bolsistas = BolsistaRepositorio.ListarBolsistas();
+            List<Projeto> projetos = ProjetoRepositorio.ListarProjeto();
 
             List<Bolsista> BolsistasDisponiveis = new List<Bolsista>();
 

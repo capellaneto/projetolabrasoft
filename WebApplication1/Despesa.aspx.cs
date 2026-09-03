@@ -23,7 +23,7 @@ namespace WebApplication1
         private void CarregarProjetos()
         {
 
-            ddlProjetos.DataSource = Repositorio.ListarProjeto();
+            ddlProjetos.DataSource = ProjetoRepositorio.ListarProjeto();
 
             ddlProjetos.DataTextField = "Titulo";
 
@@ -77,7 +77,7 @@ namespace WebApplication1
 
                 Repositorio.SalvarDespesa(novo);
 
-                var projetos = Repositorio.ListarProjeto();
+                var projetos = ProjetoRepositorio.ListarProjeto();
 
                 var projetoSelecionado = projetos
                     .FirstOrDefault(p => p.Id == novo.ProjetoID);
@@ -90,7 +90,7 @@ namespace WebApplication1
                     return;
                 }
 
-                var coordenador = Repositorio.ListarCoordenador()
+                var coordenador = CoordenadorRepositorio.ListarCoordenador()
                     .FirstOrDefault(c => c.Id == projetoSelecionado.IdCoordenador);
 
 

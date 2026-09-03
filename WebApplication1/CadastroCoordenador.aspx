@@ -100,20 +100,16 @@
                         <Columns>
 
                             <asp:BoundField
+                                DataField="Id"
+                                HeaderText="Id" />
+                            
+                            <asp:BoundField
                                 DataField="Nome"
                                 HeaderText="Nome" />
 
                             <asp:BoundField
-                                DataField="CPF"
-                                HeaderText="CPF" />
-
-                            <asp:BoundField
                                 DataField="Titulacao"
                                 HeaderText="Titulação" />
-
-                            <asp:BoundField
-                                DataField="AreaAtuacao"
-                                HeaderText="Area de Atuação" />
 
                             <asp:BoundField
                                 DataField="Email"

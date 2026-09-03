@@ -76,7 +76,7 @@
                         <Columns>
 
                             <asp:BoundField DataField="Titulo" HeaderText="´Titulo" />
-                            <asp:BoundField DataField="Area" HeaderText="Area" />
+                             <asp:BoundField DataField="Coordenador" HeaderText="Coordenador" />
                             <asp:BoundField DataField="Verba" HeaderText="´Verba" />
 
                             <asp:TemplateField HeaderText="Ações">

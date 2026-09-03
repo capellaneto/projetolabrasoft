@@ -29,7 +29,7 @@ namespace WebApplication1
                 return;
             }
 
-            if (Repositorio.ListaBolsistas.Any(b => b.CPF == txtCPF.Text))
+            if (BolsistaRepositorio.ListaBolsistas.Any(b => b.CPF == txtCPF.Text))
             {
                 lblMensagem.Text = "⚠️ Este bolsista já foi cadastrado!";
                 lblMensagem.CssClass = "alert alert-warning d-block";
@@ -47,7 +47,7 @@ namespace WebApplication1
                 novo.Sexo = ddlSexo.SelectedValue;
                 novo.DataNascimento = DateTime.Parse(txtDataNasc.Text);
 
-                Repositorio.SalvarBolsista(novo);
+                BolsistaRepositorio.SalvarBolsista(novo);
 
                 LimparCampos();
 
@@ -84,7 +84,7 @@ namespace WebApplication1
 
         private void AtualizarGrid()
         {
-            var listaBolsistas = Repositorio.ListarBolsistas();
+            var listaBolsistas = BolsistaRepositorio.ListarBolsistasNaGrid();
             if (listaBolsistas.Count > 0)
             {
                 gridBolsistas.DataSource = listaBolsistas;
@@ -109,7 +109,7 @@ namespace WebApplication1
 
         protected void btnFiltrarHomens_Click(object sender, EventArgs e)
         {
-            var listaBolsistas = Repositorio.ListarBolsistas();
+            var listaBolsistas = BolsistaRepositorio.ListarBolsistas();
             var resultado = listaBolsistas.Where(x => x.Sexo == "M").ToList();
 
             gridBolsistas.DataSource = resultado;
@@ -121,7 +121,7 @@ namespace WebApplication1
 
         protected void btnFiltrarMulheres_Click(object sender, EventArgs e)
         {
-            var listaBolsistas = Repositorio.ListarBolsistas();
+            var listaBolsistas = BolsistaRepositorio.ListarBolsistas();
             var resultado = listaBolsistas.Where(x => x.Sexo == "F").ToList();
 
             gridBolsistas.DataSource = resultado;
@@ -134,7 +134,7 @@ namespace WebApplication1
 
         protected void btnOrdemAlfabetica_Click(object sender, EventArgs e)
         {
-            var listaBolsistas = Repositorio.ListarBolsistas();
+            var listaBolsistas = BolsistaRepositorio.ListarBolsistas();
             var resultado = listaBolsistas.OrderBy(x => x.Nome).ToList();
 
             gridBolsistas.DataSource = resultado;
