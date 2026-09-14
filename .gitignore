@@ -1,5 +1,7 @@
 .vs/
 bin/
 obj/
+WebApplication1/App_Data/google_secret.json
+WebApplication1/App_Data/Tokens/
 *.user
 *.suo
