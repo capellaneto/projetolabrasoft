@@ -10,10 +10,9 @@ namespace WebApplication1
     {
         public int Id { get; set; } //Data no sql e DTO do Projeto
 
-        public int IdCoordenador { get; set; }
         public string Titulo { get; set; }
 
-        public Coordenador coordenador { get; set; }
+       public string Coordenador { get; set; }
 
         public decimal Verba { get; set; }
     }

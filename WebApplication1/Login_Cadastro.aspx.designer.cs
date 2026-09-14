@@ -33,13 +33,13 @@ namespace WebApplication1
         protected global::System.Web.UI.WebControls.View ViewLogin;
 
         /// <summary>
-        /// Controle lblMensagem.
+        /// Controle lblMensagemLogin.
         /// </summary>
         /// <remarks>
         /// Campo gerado automaticamente.
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMensagem;
+        protected global::System.Web.UI.WebControls.Label lblMensagemLogin;
 
         /// <summary>
         /// Controle lblEmail.
@@ -103,6 +103,15 @@ namespace WebApplication1
         /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.View ViewCadastro;
+
+        /// <summary>
+        /// Controle lblMensagemCadastro.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Para modificar, mova a declaração de campo do arquivo de designer a um arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMensagemCadastro;
 
         /// <summary>
         /// Controle lblNomeCadastro.

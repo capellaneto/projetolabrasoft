@@ -62,10 +62,12 @@ namespace WebApplication1
             try
             {
                 Despesa novo = new Despesa();
+
                 novo.Descricao = txtDescricao.Text;
                 novo.Valor = decimal.Parse(txtValor.Text);
                 novo.Data = DateTime.Parse(txtData.Text);
                 novo.ProjetoID = Convert.ToInt32(ddlProjetos.SelectedValue);
+
                 if (ddlCategoria.SelectedValue == "Outro")
                 {
                     novo.Categoria = txtOutraCategoria.Text;
@@ -75,46 +77,11 @@ namespace WebApplication1
                     novo.Categoria = ddlCategoria.SelectedValue;
                 }
 
-                Repositorio.SalvarDespesa(novo);
+                DespesaService service = new DespesaService();
 
-                var projetos = ProjetoRepositorio.ListarProjeto();
+                bool emailEnviado = await service.CadastrarDespesa(novo);
 
-                var projetoSelecionado = projetos
-                    .FirstOrDefault(p => p.Id == novo.ProjetoID);
-
-
-                if (projetoSelecionado == null)
-                {
-                    lblMensagem.Text = "Projeto não encontrado.";
-                    lblMensagem.CssClass = "alert alert-danger d-block";
-                    return;
-                }
-
-                var coordenador = CoordenadorRepositorio.ListarCoordenador()
-                    .FirstOrDefault(c => c.Id == projetoSelecionado.IdCoordenador);
-
-
-                if (coordenador == null)
-                {
-                    lblMensagem.Text = "Coordenador do projeto não encontrado.";
-                    lblMensagem.CssClass = "alert alert-danger d-block";
-                    return;
-                }
-
-
-
-                    EmailService emailService = new EmailService();
-
-                    bool emailEnviado = await emailService.EnviarNotificacaoDespesa(
-                        "labrasoft.ifba@gmail.com",
-                        coordenador.Nome,
-                        novo.Descricao,
-                        novo.Valor,
-                        novo.Data,
-                        coordenador.Nome
-                    );
-
-                    if (emailEnviado)
+                if (emailEnviado)
                     {
                         lblMensagem.Text = "Despesa cadastrada e e-mail enviado com sucesso.";
                         lblMensagem.CssClass = "alert alert-success d-block";

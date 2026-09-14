@@ -70,14 +70,10 @@
       
                     <asp:GridView ID="gridProjetos" runat="server" 
                         CssClass="table table-hover table-bordered mt-2" 
-                        AutoGenerateColumns="false"
+                        AutoGenerateColumns="true"
                         OnRowCommand="gridProjetos_RowCommand">
 
                         <Columns>
-
-                            <asp:BoundField DataField="Titulo" HeaderText="´Titulo" />
-                             <asp:BoundField DataField="Coordenador" HeaderText="Coordenador" />
-                            <asp:BoundField DataField="Verba" HeaderText="´Verba" />
 
                             <asp:TemplateField HeaderText="Ações">
                                 <ItemTemplate>

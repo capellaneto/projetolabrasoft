@@ -103,5 +103,47 @@ namespace WebApplication1
             }
             return lista;
         }
+
+        public static void AtualizarEmailCoordenador(int id, string NovoEmail)
+        {
+            string conexao = ConfigurationManager.ConnectionStrings["Conexao"].ConnectionString;
+
+
+            using (SqlConnection conn = new SqlConnection(conexao))
+            {
+                conn.Open();
+
+                string sql = @"UPDATE Coordenador
+                               SET Email = @Email
+                               WHERE Id = @Id";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+                cmd.Parameters.AddWithValue("@Email", NovoEmail);
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public static void ExcluirCoordenador(int IdCoordenador)
+        {
+            string conexao = ConfigurationManager.ConnectionStrings["Conexao"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(conexao))
+            {
+                conn.Open();
+
+                string sql = "DELETE FROM Coordenador WHERE ID = @ID";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+                cmd.Parameters.AddWithValue("@ID", IdCoordenador);
+
+                cmd.ExecuteNonQuery();
+
+
+            }
+        }
     }
 }

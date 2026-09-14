@@ -29,33 +29,29 @@ namespace WebApplication1
                 return;
             }
 
-            if (BolsistaRepositorio.ListaBolsistas.Any(b => b.CPF == txtCPF.Text))
-            {
-                lblMensagem.Text = "⚠️ Este bolsista já foi cadastrado!";
-                lblMensagem.CssClass = "alert alert-warning d-block";
-                LimparCampos();
-                AtualizarGrid();
-                return; 
-            }
-
             try
             {
                 Bolsista novo = new Bolsista();
+
                 novo.Nome = txtNome.Text;
                 novo.Matricula = txtMatricula.Text;
                 novo.CPF = txtCPF.Text;
                 novo.Sexo = ddlSexo.SelectedValue;
                 novo.DataNascimento = DateTime.Parse(txtDataNasc.Text);
 
-                BolsistaRepositorio.SalvarBolsista(novo);
+                BolsistaService service = new BolsistaService();
+
+                bool cadastrado = service.CadastrarBolsista(novo);
+
+                if(!cadastrado)
+                {
+                    lblMensagem.Text = "Bolsista cadastrado com sucesso!";
+                    lblMensagem.CssClass = "alert alert-success d-block";
+                }
 
                 LimparCampos();
-
-                lblMensagem.Text = "Bolsista cadastrado com sucesso!";
-                lblMensagem.CssClass = "alert alert-success d-block";
-
-
                 AtualizarGrid();
+                return;
             }
             catch (Exception)
             {
@@ -84,7 +80,10 @@ namespace WebApplication1
 
         private void AtualizarGrid()
         {
-            var listaBolsistas = BolsistaRepositorio.ListarBolsistasNaGrid();
+            BolsistaService service = new BolsistaService();
+
+            var listaBolsistas = service.ListarBolsistas();
+
             if (listaBolsistas.Count > 0)
             {
                 gridBolsistas.DataSource = listaBolsistas;
@@ -109,8 +108,8 @@ namespace WebApplication1
 
         protected void btnFiltrarHomens_Click(object sender, EventArgs e)
         {
-            var listaBolsistas = BolsistaRepositorio.ListarBolsistas();
-            var resultado = listaBolsistas.Where(x => x.Sexo == "M").ToList();
+            BolsistaService service = new BolsistaService();
+            var resultado = service.ListarHomens();
 
             gridBolsistas.DataSource = resultado;
             gridBolsistas.DataBind();
@@ -121,8 +120,8 @@ namespace WebApplication1
 
         protected void btnFiltrarMulheres_Click(object sender, EventArgs e)
         {
-            var listaBolsistas = BolsistaRepositorio.ListarBolsistas();
-            var resultado = listaBolsistas.Where(x => x.Sexo == "F").ToList();
+            BolsistaService service = new BolsistaService();
+            var resultado = service.ListarMulheres();
 
             gridBolsistas.DataSource = resultado;
             gridBolsistas.DataBind();
@@ -134,8 +133,8 @@ namespace WebApplication1
 
         protected void btnOrdemAlfabetica_Click(object sender, EventArgs e)
         {
-            var listaBolsistas = BolsistaRepositorio.ListarBolsistas();
-            var resultado = listaBolsistas.OrderBy(x => x.Nome).ToList();
+            BolsistaService service = new BolsistaService();
+            var resultado = service.ListarOrdemAlfabetica();
 
             gridBolsistas.DataSource = resultado;
             gridBolsistas.DataBind();

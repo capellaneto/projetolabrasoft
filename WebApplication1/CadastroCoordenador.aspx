@@ -92,28 +92,14 @@
                     <asp:GridView ID="gridCoordenadores" 
                         runat="server" 
                         CssClass="table table-hover table-bordered mt-2" 
-                        AutoGenerateColumns="false"
+                        AutoGenerateColumns="true"
                         OnRowCommand="gridCoordenadores_RowCommand">
                         
                         <HeaderStyle CssClass="table-dark" />
 
                         <Columns>
 
-                            <asp:BoundField
-                                DataField="Id"
-                                HeaderText="Id" />
                             
-                            <asp:BoundField
-                                DataField="Nome"
-                                HeaderText="Nome" />
-
-                            <asp:BoundField
-                                DataField="Titulacao"
-                                HeaderText="Titulação" />
-
-                            <asp:BoundField
-                                DataField="Email"
-                                HeaderText="Email" />
 
                             <asp:TemplateField HeaderText="Ação">
 

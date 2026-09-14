@@ -24,27 +24,28 @@ namespace WebApplication1
 
         protected void btnCadastrar_Click(object sender, EventArgs e)
         {
-            if (Repositorio.ListarUsuarios().Any(u =>
+            if (UsuarioRepositorio.ListarUsuarios().Any(u =>
                 u.Email.Equals(
                     txtEmailCadastro.Text.Trim(),
                     StringComparison.OrdinalIgnoreCase)))
             {
-                lblMensagem.Text = "⚠️ Este Email já está cadastrado!";
-                lblMensagem.CssClass = "alert alert-warning d-block";
+                lblMensagemCadastro.Text = "⚠️ Este Email já está cadastrado!";
+                lblMensagemCadastro.CssClass = "alert alert-warning d-block";
                 return;
             }
 
             Usuario usuario = new Usuario();
 
+            usuario.Nome = txtNomeCadastro.Text.Trim();
             usuario.Email = txtEmailCadastro.Text.Trim();
             usuario.Senha = BCrypt.Net.BCrypt.HashPassword(
                 txtSenhaCadastro.Text
             );
 
-            Repositorio.SalvarUsuario(usuario);
+            UsuarioRepositorio.SalvarUsuario(usuario);
 
-            lblMensagem.Text = "✅ Cadastro realizado com sucesso!";
-            lblMensagem.CssClass = "alert alert-success d-block";
+            lblMensagemCadastro.Text = "✅ Cadastro realizado com sucesso!";
+            lblMensagemCadastro.CssClass = "alert alert-success d-block";
 
             MultiView1.ActiveViewIndex = 0;
         }
@@ -54,7 +55,7 @@ namespace WebApplication1
             string email = txtEmail.Text.Trim();
             string senha = txtSenha.Text;
 
-            Usuario usuario = Repositorio.ListarUsuarios()
+            Usuario usuario = UsuarioRepositorio.ListarUsuarios()
                 .FirstOrDefault(u =>
                     u.Email.Equals(
                         email,
@@ -62,15 +63,15 @@ namespace WebApplication1
 
             if (usuario == null)
             {
-                lblMensagem.Text = "⚠️ Este Email não está cadastrado!";
-                lblMensagem.CssClass = "alert alert-warning d-block";
+                lblMensagemLogin.Text = "⚠️ Este Email não está cadastrado!";
+                lblMensagemLogin.CssClass = "alert alert-warning d-block";
                 return;
             }
 
             if (!BCrypt.Net.BCrypt.Verify(senha, usuario.Senha))
             {
-                lblMensagem.Text = "⚠️ Senha incorreta!";
-                lblMensagem.CssClass = "alert alert-warning d-block";
+                lblMensagemLogin.Text = "⚠️ Senha incorreta!";
+                lblMensagemLogin.CssClass = "alert alert-warning d-block";
                 return;
             }
 

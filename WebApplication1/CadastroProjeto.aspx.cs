@@ -12,7 +12,11 @@ namespace WebApplication1
     {
         private void AtualizarGrid()
         {
-            var listaProjetos = ProjetoRepositorio.ListarProjeto();
+
+            ProjetoService projetoservice = new ProjetoService();
+
+
+            var listaProjetos = projetoservice.ListarProjeto();
             if (listaProjetos.Count > 0)
             {
                 gridProjetos.DataSource = listaProjetos;
@@ -41,9 +45,11 @@ namespace WebApplication1
 
         protected void Atualizar_Bolsistas(int IDProjeto)
         {
-            Projeto projeto = ProjetoRepositorio.ListarProjeto()
-            .FirstOrDefault(p => p.Id == IDProjeto);
 
+            ProjetoService projetoservice = new ProjetoService();
+
+
+            Projeto projeto = projetoservice.BuscarProjeto(IDProjeto);
 
             rptBolsistas.DataSource = projeto.ListaBolsistasProjeto;
             rptBolsistas.DataBind();
@@ -51,6 +57,9 @@ namespace WebApplication1
 
         protected void btnSalvar_Click(object sender, EventArgs e)
         {
+            ProjetoService projetoservice = new ProjetoService();
+
+
             if (string.IsNullOrWhiteSpace(txtTitulo.Text) ||
             string.IsNullOrWhiteSpace(txtVerba.Text) ||
             string.IsNullOrWhiteSpace(txtArea.Text) ||
@@ -63,7 +72,7 @@ namespace WebApplication1
 
            //if(Repositorio) terminar if que bloqueia o cadastro de coordenadores e bolsistas ja cadastrados em outros projetos
             
-            if (ProjetoRepositorio.ListarProjeto().Any(b => b.Titulo == txtTitulo.Text))
+            if (projetoservice.ListarProjeto().Any(b => b.Titulo == txtTitulo.Text))
             {
                 lblMensagem.Text = "⚠️ Este Projeto já foi cadastrado!";
                 lblMensagem.CssClass = "alert alert-warning d-block";
@@ -72,7 +81,7 @@ namespace WebApplication1
                 return; // Para a execução aqui
             }
 
-            if (ProjetoRepositorio.ListarProjeto().Any(p => p.IdCoordenador == Convert.ToInt32(Coordenadores.SelectedValue)))
+            if (projetoservice.ListarProjetosCompletos().Any(p => p.IdCoordenador == Convert.ToInt32(Coordenadores.SelectedValue)))
             {
                 lblMensagem.Text = "⚠️ Este Coordenador já está cadastrado em outro projeto!";
                 lblMensagem.CssClass = "alert alert-warning d-block";
@@ -83,9 +92,9 @@ namespace WebApplication1
 
             foreach (ListItem item in ddlBolsistas.Items)
             {
-                if (item.Selected)
+                if (item.Selected && !string.IsNullOrEmpty(item.Value))
                 {
-                    bool ListaBolsistas = ProjetoRepositorio.ListarProjeto().Any(p =>
+                    bool ListaBolsistas = projetoservice.ListarProjetosCompletos().Any(p =>
                     p.ListaBolsistasProjeto.Any(b => b.Id == Convert.ToInt32(item.Value)));
 
                     if (ListaBolsistas)
@@ -99,9 +108,8 @@ namespace WebApplication1
                 }
             }
 
-                try
+            try
             {
-                // Criando o objeto usando o novo Model
                 Projeto novo = new Projeto();
                 novo.Titulo = txtTitulo.Text;
                 novo.Verba = decimal.Parse(txtVerba.Text);
@@ -109,56 +117,60 @@ namespace WebApplication1
                 novo.Valor_Bolsa = decimal.Parse(txtValorBolsa.Text);
                 novo.IdCoordenador = Convert.ToInt32(Coordenadores.SelectedValue);
 
-
+                BolsistaService bolsistaservice = new BolsistaService();
 
                 foreach (ListItem item in ddlBolsistas.Items)
                 {
-                    if (item.Selected)
+                    if (item.Selected && !string.IsNullOrEmpty(item.Value))
                     {
 
-                        Bolsista bolsista = BolsistaRepositorio.ListarBolsistas().FirstOrDefault(b => b.Id == Convert.ToInt32(item.Value));
+                        Bolsista bolsista = bolsistaservice.BuscarBolsista(Convert.ToInt32(item.Value));
 
-                       if (bolsista != null)
+                        if (bolsista != null)
                         {
-                            novo.ListaBolsistasProjeto.Add(bolsista); 
+                            novo.ListaBolsistasProjeto.Add(bolsista);
                         }
                     }
                 }
 
-                    // 2. ADICIONAR NA LISTA ESTÁTICA
-                int idProjeto = ProjetoRepositorio.SalvarProjeto(novo);
+                bool sucesso = projetoservice.CadastrarProjeto(novo);
 
-                foreach(Bolsista bolsista in novo.ListaBolsistasProjeto)
+                if (sucesso)
                 {
-                    Repositorio.SalvarVinculoBolsistaProjeto(idProjeto, bolsista.Id);
+                    LimparCampos();
+
+                    lblMensagem.Text = "Projeto salvo com sucesso!"; //verificar mensagem depois
+                    lblMensagem.CssClass = "text-success";
+
+                    AtualizarGrid();
                 }
-
-
-                LimparCampos();
-                lblMensagem.Text = "Projeto salvo com sucesso!"; //verificar mensagem depois
-                lblMensagem.CssClass = "text-success";
-
-                Response.Redirect("CadastroProjeto.aspx");
-
-                AtualizarGrid();
+                else
+                {
+                    lblMensagem.Text = "⚠️ Projeto já cadastrado ou coordenador já vinculado a outro projeto.";
+                    lblMensagem.CssClass = "text-warning";
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                lblMensagem.Text = "Erro ao salvar Projeto.";
+                lblMensagem.Text = "Erro ao cadastrar projeto: " + ex.Message;
                 lblMensagem.CssClass = "text-danger";
             }
         }
         protected void gridProjetos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
+            ProjetoService projetoservice = new ProjetoService();
+            CoordenadorService coordenadorservice = new CoordenadorService();
+            DespesaService despesaservice = new DespesaService();
+
             if (e.CommandName == "MostrarDetalhes")
             {
                 int indice = Convert.ToInt32(e.CommandArgument);
 
-                Projeto projeto = ProjetoRepositorio.ListarProjeto()[indice];
+                Projeto projeto = projetoservice.ListarProjetosCompletos()[indice];
 
                 ViewState["ProjetoID"] = projeto.Id;
 
-                projeto.coordenador = CoordenadorRepositorio.ListarCoordenador().FirstOrDefault(c => c.Id == projeto.IdCoordenador);
+                projeto.coordenador = coordenadorservice.BuscarCoordenador(projeto.IdCoordenador);
 
                 pnlDetalhes.Visible = true;
 
@@ -185,23 +197,27 @@ namespace WebApplication1
                     lblSemBolsista.Visible = false;
                 }
 
-                var DespesasProjeto = Repositorio.ListarDespesas().Where(d => d.ProjetoID == projeto.Id).ToList();
+                List<Despesa> despesasProjeto = despesaservice.ListarDespesasPorProjeto(projeto.Id);
 
-                GridDespesas.DataSource = DespesasProjeto;
+                GridDespesas.DataSource = despesasProjeto;
                 GridDespesas.DataBind();
 
             }
             
         }
 
-        private void CarregarCoordenadores()
+        private void CarregarCoordenadores() //opções de coordenadores só atualiza se rodar o programa dnv
         {
-            List<Coordenador> coordenadores = CoordenadorRepositorio.ListarCoordenador();
-            List<Projeto> projetos = ProjetoRepositorio.ListarProjeto();
+            ProjetoService projetoservice = new ProjetoService();
+            CoordenadorService coordenadorservice = new CoordenadorService();
 
-            List<Coordenador> CoordenadoresDisponiveis = new List<Coordenador>();
 
-            foreach (Coordenador coordenador in coordenadores)
+            List<CoordenadorGridDTO> coordenadores = coordenadorservice.ListarCoordenadores();
+            List<Projeto> projetos = projetoservice.ListarProjetosCompletos();
+
+            List<CoordenadorGridDTO> CoordenadoresDisponiveis = new List<CoordenadorGridDTO>();
+
+            foreach (CoordenadorGridDTO coordenador in coordenadores)
             {
                 bool EstaEmProjeto = false;
 
@@ -226,14 +242,19 @@ namespace WebApplication1
             Coordenadores.Items.Insert(0, new ListItem("Selecione", ""));
         }
 
-        private void CarregarBolsistas()
+        private void CarregarBolsistas() //opções de bolsistas só atualiza se rodar o programa dnv
         {
-            List<Bolsista> bolsistas = BolsistaRepositorio.ListarBolsistas();
-            List<Projeto> projetos = ProjetoRepositorio.ListarProjeto();
 
-            List<Bolsista> ListaDisponiveis = new List<Bolsista>();
+            BolsistaService bolsistaservice = new BolsistaService();
+            ProjetoService projetoservice = new ProjetoService();
 
-            foreach (Bolsista bolsista in bolsistas)
+
+            List<BolsistaGridDTO> bolsistas = bolsistaservice.ListarBolsistas();
+            List<Projeto> projetos = projetoservice.ListarProjetosCompletos();
+
+            List<BolsistaGridDTO> ListaDisponiveis = new List<BolsistaGridDTO>();
+
+            foreach (BolsistaGridDTO bolsista in bolsistas)
             {
                 bool EstaEmProjeto = false;
 
@@ -273,7 +294,7 @@ namespace WebApplication1
                 {
                     int bolsistaID = Convert.ToInt32(item.Value);
 
-                    Repositorio.SalvarVinculoBolsistaProjeto(projetoID, bolsistaID);
+                    ProjetoRepositorio.SalvarVinculoBolsistaProjeto(projetoID, bolsistaID);
                 }
             }
             Atualizar_Bolsistas(projetoID);
@@ -343,7 +364,7 @@ namespace WebApplication1
 
                 try
                 {
-                    Repositorio.ExcluirBolsistaProjeto(ProjetoID, idBolsista);
+                    ProjetoRepositorio.ExcluirBolsistaProjeto(ProjetoID, idBolsista);
 
                     lblMensagem.Text = "Bolsista excluido com sucesso";
                     lblMensagem.Visible = true;

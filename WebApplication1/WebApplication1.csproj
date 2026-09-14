@@ -151,6 +151,11 @@
     <Content Include="Web\Formulario.html" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Service\ProjetoService.cs" />
+    <Compile Include="Service\CoordenadorService.cs" />
+    <Compile Include="Service\BolsistaService.cs" />
+    <Compile Include="Service\DespesaService.cs" />
+    <Compile Include="Repositórios\DespesaRepositorio.cs" />
     <Compile Include="DTOs\ProjetoGridDTO.cs" />
     <Compile Include="Repositórios\ProjetoRepositorio.cs" />
     <Compile Include="Repositórios\CoordenadorRepositorio.cs" />
@@ -216,6 +221,7 @@
       <DependentUpon>Site.Master</DependentUpon>
     </Compile>
     <Compile Include="Service\TokenService.cs" />
+    <Compile Include="Repositórios\UsuarioRepositorio.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Site.Master" />

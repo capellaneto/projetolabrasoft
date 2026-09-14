@@ -31,15 +31,6 @@ namespace WebApplication1
                 return;
             }
 
-            if (CoordenadorRepositorio.ListarCoordenador().Any(b => b.CPF == txtCPF.Text))
-            {
-                lblMensagem.Text = "⚠️ Este Coordenador já foi cadastrado!";
-                lblMensagem.CssClass = "alert alert-warning d-block";
-                LimparCampos();
-                AtualizarGrid();
-                return; // Para a execução aqui
-            }
-
             try
             {
                 // Criando o objeto usando o novo Model
@@ -50,13 +41,17 @@ namespace WebApplication1
                 novo.AreaAtuacao = txtArea.Text;
                 novo.Email = txtEmail.Text;
 
-                // 2. ADICIONAR NA LISTA ESTÁTICA
-                CoordenadorRepositorio.SalvarCoordenador(novo);
+                CoordenadorService service = new CoordenadorService();
+
+                bool cadastrado = service.CadastrarCoordenador(novo);
+
+                if (!cadastrado)
+                {
+                    lblMensagem.Text = "Coordenador cadastrado com sucesso!";
+                    lblMensagem.CssClass = "alert alert-success d-block";
+                }
 
                 LimparCampos();
-                lblMensagem.Text = "Coordenador salvo com sucesso!";
-                lblMensagem.CssClass = "text-success";
-
                 AtualizarGrid();
             }
             catch (Exception)
@@ -68,8 +63,11 @@ namespace WebApplication1
 
         protected void btnFiltrarNomeTitulacao_Click(object sender, EventArgs e)
         {
-            var busca = txtFiltro.Text.ToLower();
-            var coordenadores = CoordenadorRepositorio.ListarCoordenador().Where(c => c.Nome.ToLower().Contains(busca) || c.Titulacao.ToLower().Contains(busca)).ToList();
+            var busca = txtFiltro.Text.Trim();
+
+            CoordenadorService service = new CoordenadorService();
+
+            var coordenadores = service.FiltrarNomeTitulacao(busca);
 
             if (coordenadores.Count > 0)
             {
@@ -94,7 +92,10 @@ namespace WebApplication1
 
         private void AtualizarGrid()
         {
-            var listaCoordenadores = CoordenadorRepositorio.ListarCoordenadorNaGrid();
+            CoordenadorService service = new CoordenadorService();
+
+            var listaCoordenadores = service.ListarCoordenadores();
+
             if (listaCoordenadores.Count > 0)
             {
                 gridCoordenadores.DataSource = listaCoordenadores;
@@ -108,8 +109,6 @@ namespace WebApplication1
         }
 
 
-    
-
 
         protected void gridCoordenadores_RowCommand(object sender, GridViewCommandEventArgs e)
         {
@@ -117,13 +116,15 @@ namespace WebApplication1
 
             Panel painel = (Panel)linha.FindControl("pnlAtualizarEmail");
 
+            CoordenadorService service = new CoordenadorService();
+
             if (e.CommandName == "Excluir Coordenador")
             {
                 int id = Convert.ToInt32(e.CommandArgument);
 
                 try
                 {
-                    Repositorio.ExcluirCoordenador (id);
+                    service.ExcluirCoordenador(id);
 
                     lblMensagem.Text = "Coordenador excluido com sucesso!";
                     lblMensagem.Visible = true;
@@ -157,9 +158,9 @@ namespace WebApplication1
             {
                 TextBox txtNovoEmail = (TextBox)linha.FindControl("txtNovoEmail");
 
-                string novoEmail = txtNovoEmail.Text.Trim();
+                string NovoEmail = txtNovoEmail.Text.Trim();
 
-                if (string.IsNullOrWhiteSpace(novoEmail))
+                if (string.IsNullOrWhiteSpace(NovoEmail))
                 {
                     lblMensagem.Text = "⚠️ Digite um novo e-mail.";
                     lblMensagem.CssClass = "text-danger";
@@ -170,7 +171,7 @@ namespace WebApplication1
 
                 try
                 {
-                    Repositorio.AtualizarEmailCoordenador(id, novoEmail);
+                    service.AtualizarEmail(id, NovoEmail);
 
                     lblMensagem.Text = "E-mail atualizado com sucesso!";
                     lblMensagem.CssClass = "text-success";

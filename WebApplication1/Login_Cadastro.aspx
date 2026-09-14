@@ -10,7 +10,7 @@
             <h2>Login</h2>
 
              <asp:Label 
-             ID="lblMensagem" 
+             ID="lblMensagemLogin" 
              runat="server" 
              CssClass="alert d-none">
          </asp:Label>
@@ -47,6 +47,12 @@
         <asp:View ID="ViewCadastro" runat="server">
 
              <h2>Cadastro</h2>
+
+                    <asp:Label 
+                    ID="lblMensagemCadastro" 
+                    runat="server" 
+                    CssClass="alert d-none">
+                </asp:Label>
 
             
 

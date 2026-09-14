@@ -91,7 +91,11 @@ namespace WebApplication1
             {
                 conn.Open();
 
-                string sql = "SELECT Id, Titulo, IdCoordenador, Verba FROM Projeto";
+                string sql = @"
+                            SELECT p.ID, p.Titulo, p.VerbaAprovada, c.Nome AS Coordenador
+                            FROM Projeto p
+                            INNER JOIN Coordenador c
+                                ON p.CoordenadorID = c.ID";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
 
@@ -104,7 +108,112 @@ namespace WebApplication1
                     b.Id = Convert.ToInt32(reader["ID"]);
                     b.Titulo = reader["Titulo"].ToString();
                     b.Verba = Convert.ToDecimal(reader["VerbaAprovada"]);
-                    b.IdCoordenador = Convert.ToInt32(reader["CoordenadorID"]);
+                    b.Coordenador = reader["Coordenador"].ToString();
+
+                    lista.Add(b);
+                }
+            }
+
+            return lista;
+        }
+
+        public static void ExcluirProjeto(int IdProjeto)
+        {
+            string conexao = ConfigurationManager.ConnectionStrings["Conexao"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(conexao))
+            {
+                conn.Open();
+
+                string sql = "DELETE FROM Projeto WHERE ID = @ID";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+                cmd.Parameters.AddWithValue("@ID", IdProjeto);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public static void ExcluirBolsistaProjeto(int IdProjeto, int IdBolsista)
+        {
+            string conexao = ConfigurationManager.ConnectionStrings["Conexao"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(conexao))
+            {
+                conn.Open();
+
+                string sql = "DELETE FROM ProjetoBolsista WHERE ProjetoID = @ProjetoID AND BolsistaID = @BolsistaID";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+                cmd.Parameters.AddWithValue("@ProjetoID", IdProjeto);
+                cmd.Parameters.AddWithValue("@BolsistaID", IdBolsista);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public static void SalvarVinculoBolsistaProjeto(int idProjeto, int idBolsista)
+        {
+            string conexao = ConfigurationManager.ConnectionStrings["Conexao"].ConnectionString;
+
+
+            using (SqlConnection conn = new SqlConnection(conexao))
+            {
+                conn.Open();
+
+
+                string sql = @"INSERT INTO ProjetoBolsista
+                       (ProjetoID, BolsistaID, DataVinculo)
+
+                       VALUES
+
+                       (@idProjeto, @idBolsista, @DataVinculo)";
+
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+
+                cmd.Parameters.AddWithValue("@idProjeto", idProjeto);
+                cmd.Parameters.AddWithValue("@idBolsista", idBolsista);
+                cmd.Parameters.AddWithValue("@DataVinculo", DateTime.Now);
+
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public static List<Bolsista> ListarBolsistasProjeto(int idProjeto)
+        {
+            List<Bolsista> lista = new List<Bolsista>();
+
+            using (SqlConnection conn = Conexao.CriarConexao())
+            {
+                conn.Open();
+
+                string sql = @"
+                      SELECT b.*
+                      FROM Bolsista b
+                      INNER JOIN ProjetoBolsista pb
+                           ON b.Id = pb.BolsistaID
+                      WHERE pb.ProjetoID = @ProjetoID";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@ProjetoID", idProjeto);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Bolsista b = new Bolsista();
+
+                    b.Id = Convert.ToInt32(reader["Id"]);
+                    b.Nome = reader["Nome"].ToString();
+                    b.CPF = reader["CPF"].ToString();
+                    b.Matricula = reader["Matricula"].ToString();
+                    b.Sexo = reader["Sexo"].ToString();
+                    b.DataNascimento = Convert.ToDateTime(reader["DataNascimento"]);
 
                     lista.Add(b);
                 }
